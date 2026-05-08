@@ -1,7 +1,5 @@
 <div align="center">
 
-<img src="./frontend/public/healthLense.png" alt="HealthLense Logo" width="100" />
-
 # HealthLense
 
 ### AI-Powered Medical Report Analysis & Symptom Intelligence Platform
