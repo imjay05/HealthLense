@@ -22,8 +22,6 @@ markdown<div align="center">
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
 
 [Live Demo - https://healthlense.app](https://healthlense.vercel.app/)
-> **Note:** The live demo uses free-tier Groq API credits. High-volume usage may result in temporary rate limiting.
-
 
 </div>
 
