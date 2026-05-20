@@ -21,7 +21,7 @@ markdown<div align="center">
 [![JWT](https://img.shields.io/badge/JWT-Auth-000000?style=flat-square&logo=jsonwebtokens&logoColor=white)](https://jwt.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
 
-[Live Demo](#live-demo) · [Report Bug](https://github.com/yourusername/healthlense/issues) · [Request Feature](https://github.com/yourusername/healthlense/issues)
+[Live Demo](#live-demo) 
 
 </div>
 
