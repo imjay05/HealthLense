@@ -69,7 +69,7 @@ export default function SignupPage() {
           <form className="auth-form" onSubmit={submit}>
             <div className="auth-field animate-fadeIn">
               <label className="form-label">Full Name</label>
-              <input className="input" placeholder="Aarav Shah"
+              <input className="input" placeholder="User Name"
                 value={form.name} onChange={e => set('name', e.target.value)} required />
             </div>
             <div className="auth-field">
