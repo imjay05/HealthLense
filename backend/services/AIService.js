@@ -20,9 +20,9 @@ const analyzeReport = async (
   filePublicId = null,
   filePages = 1          
 ) => {
-  const client    = getGroqClient();
+  const client = getGroqClient();
   const langLabel = LANG_LABELS[outputLang] || "English";
-  const urls      = Array.isArray(fileUrls) ? fileUrls : [fileUrls];
+  const urls = Array.isArray(fileUrls) ? fileUrls : [fileUrls];
 
   let imageUrls;
   if (fileType === "pdf") {

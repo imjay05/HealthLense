@@ -1,4 +1,4 @@
-<div align="center">
+markdown<div align="center">
 
 # HealthLense
 
@@ -27,31 +27,6 @@
 
 ---
 
-## Table of Contents
-
-- [Problem Statement](#problem-statement)
-- [Solution](#solution)
-- [Live Demo](#live-demo)
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [System Architecture](#system-architecture)
-- [Folder Structure](#folder-structure)
-- [Database Schemas & ER Diagram](#database-schemas--er-diagram)
-- [API Reference](#api-reference)
-- [Environment Variables](#environment-variables)
-- [Installation & Setup](#installation--setup)
-- [Usage](#usage)
-- [Screenshots](#screenshots)
-- [Performance & Rate Limiting](#performance--rate-limiting)
-- [Security](#security)
-- [Roadmap](#roadmap)
-- [Contributing](#contributing)
-- [License](#license)
-- [Author](#author)
-- [Acknowledgements](#acknowledgements)
-
----
-
 ## Problem Statement
 
 Healthcare in India faces a significant accessibility gap. Millions of patients receive medical lab reports they simply cannot understand — dense tables of values, cryptic abbreviations, and clinical language that means nothing to a layperson. Further compounding this:
@@ -67,7 +42,7 @@ Healthcare in India faces a significant accessibility gap. Millions of patients 
 
 ## Solution
 
-HealthLense bridges the gap between raw medical data and patient understanding. It provides:
+HealthLense bridges the gap between raw medical data and patient understanding:
 
 1. **AI-Powered Report Analysis** — Upload a PDF, Word doc, or image of any medical report. Get a structured interpretation in seconds, in the language of your choice.
 2. **Multilingual Symptom Checker** — Describe symptoms in English, Hindi, Marathi, or Hinglish. Receive a curated list of recommended diagnostic tests with clinical reasoning.
@@ -102,11 +77,11 @@ HealthLense bridges the gap between raw medical data and patient understanding. 
 - JWT-based authentication with 7-day token expiry
 - Bcrypt password hashing (12 rounds)
 - Per-user MongoDB-backed rate limiting on AI endpoints
-- CORS restricted to configured client origin
+- CORS restricted to configured origins via `ALLOWED_ORIGINS`
 - Global error handling with multer, JWT, and Mongoose-specific responses
 
 ### Notifications
-- Welcome email on signup (HTML template via Resend)
+- Welcome email on signup (plain-text via Resend)
 - Admin notification on each new user registration
 
 ### Real-time
@@ -117,29 +92,31 @@ HealthLense bridges the gap between raw medical data and patient understanding. 
 ## Tech Stack
 
 ### Backend
+
 | Layer | Technology |
 |---|---|
 | Runtime | Node.js 20 |
 | Framework | Express.js 4 |
 | Database | MongoDB (Mongoose ODM) |
 | AI / Vision | Groq — LLaMA 4 Scout 17B (Vision), LLaMA 3.3 70B (Text) |
-| File Storage | Cloudinary (images, PDFs as `image` resource; DOCX as `raw`) |
+| File Storage | Cloudinary (images & PDFs as `image` resource; DOCX as `raw`) |
 | Email | Resend |
 | Real-time | Socket.IO 4 |
 | Auth | JSON Web Tokens + bcryptjs |
 | File Upload | Multer (memory storage) |
-| Rate Limiting | Custom MongoDB TTL-based middleware |
+| Rate Limiting | Custom MongoDB TTL-based sliding window middleware |
 | Geocoding | Nominatim (OpenStreetMap) |
 | Async Errors | express-async-errors |
 
 ### Frontend
+
 | Layer | Technology |
 |---|---|
 | Framework | React 18 |
 | Build Tool | Vite 5 |
 | Routing | React Router DOM 6 |
 | State Management | Zustand |
-| HTTP Client | Axios (with JWT interceptor) |
+| HTTP Client | Axios (with JWT interceptor + 401 auto-logout) |
 | Maps | Leaflet 1.9 (CDN) |
 | Charts | Recharts |
 | Real-time | Socket.IO Client |
@@ -150,94 +127,59 @@ HealthLense bridges the gap between raw medical data and patient understanding. 
 
 ## System Architecture
 
-```
 ┌─────────────────────────────────────────────────────────────────┐
 │                        CLIENT (React + Vite)                    │
 │                                                                 │
 │  ┌──────────┐  ┌──────────┐  ┌───────────┐  ┌──────────────┐  │
 │  │ AuthPages│  │AnalyzePg │  │SymptomsPage│  │HistoryPage   │  │
 │  └────┬─────┘  └────┬─────┘  └─────┬─────┘  └──────┬───────┘  │
-│       │             │              │                │           │
 │       └─────────────┴──────────────┴────────────────┘          │
-│                          Axios + JWT Interceptor                │
-│                          Socket.IO Client                       │
+│                   Axios + JWT Interceptor / Socket.IO Client    │
 └──────────────────────────────┬──────────────────────────────────┘
-                               │ HTTP / WebSocket
+│ HTTP / WebSocket
 ┌──────────────────────────────▼──────────────────────────────────┐
 │                     SERVER (Express + Socket.IO)                │
 │                                                                 │
-│  ┌─────────────┐  ┌──────────────┐  ┌───────────────────────┐  │
-│  │ AuthMiddle  │  │ RateLimiter  │  │   Multer (upload)     │  │
-│  │ (JWT verify)│  │ (MongoDB TTL)│  │   memory storage      │  │
-│  └──────┬──────┘  └──────┬───────┘  └───────────┬───────────┘  │
-│         │                │                       │              │
-│  ┌──────▼────────────────▼───────────────────────▼───────────┐  │
-│  │               Route Handlers                               │  │
-│  │  /auth  /reports  /symptoms  /history                     │  │
-│  └──────────────────────────────────────────────────────────-┘  │
-│         │                │                       │              │
-│  ┌──────▼──────┐  ┌──────▼──────┐  ┌────────────▼──────────┐  │
-│  │ AIService   │  │CloudinaryS. │  │  OverpassService       │  │
-│  │ (Groq API)  │  │(upload/thumb│  │  (Nominatim geocode)   │  │
-│  └──────┬──────┘  └──────┬──────┘  └────────────┬──────────┘  │
-│         │                │                       │              │
-│  ┌──────▼──────┐  ┌──────▼──────┐  ┌────────────▼──────────┐  │
-│  │  Groq Cloud │  │  Cloudinary │  │  OpenStreetMap /       │  │
-│  │  (LLaMA 4)  │  │  CDN        │  │  Nominatim API         │  │
-│  └─────────────┘  └─────────────┘  └───────────────────────┘  │
+│  AuthMiddleware (JWT)  ·  RateLimiter (MongoDB TTL)  ·  Multer  │
 │                                                                 │
-│  ┌──────────────────────────────────────────────────────────┐  │
-│  │                   MongoDB Atlas                           │  │
-│  │   Users · Reports · SymptomQueries · RateLimits          │  │
-│  └──────────────────────────────────────────────────────────┘  │
+│              /auth  /reports  /symptoms  /history               │
 │                                                                 │
-│  ┌──────────────────────────────────────────────────────────┐  │
-│  │                 Email (Resend)                            │  │
-│  │   Welcome Email · Admin Signup Notification              │  │
-│  └──────────────────────────────────────────────────────────┘  │
+│    AIService (Groq)  ·  CloudinaryService  ·  OverpassService   │
+│                                                                 │
+│                    MongoDB Atlas                                │
+│          Users · Reports · SymptomQueries · RateLimits          │
+│                                                                 │
+│                  Email (Resend)                                 │
+│         Welcome Email · Admin Signup Notification               │
 └─────────────────────────────────────────────────────────────────┘
-```
 
 ### Data Flow — Report Analysis
 
-```
 User uploads file(s)
-       │
-       ▼
+│
+▼
 Multer (memory buffer)
-       │
-       ▼
-Cloudinary upload (PDF → image resource, DOCX → raw, image → image)
-       │
-       ├── result.pages  (PDF page count)
-       └── result.secure_url
-       │
-       ▼
+│
+▼
+Cloudinary upload
+PDF → image resource  |  DOCX → raw  |  IMG → image
+│
+▼
 AIService.analyzeReport()
-       │
-       ├── PDF  → pdfToImageUrls(publicId, min(pages, 4))
-       │          → Cloudinary per-page JPEG URLs
-       ├── DOCX → Cloudinary raw URL
-       └── IMG  → Cloudinary secure URL
-       │
-       ▼
+PDF  → pdfToImageUrls(publicId, min(pages, 4)) → per-page JPEG URLs
+DOCX → Cloudinary raw URL
+IMG  → Cloudinary secure URL
+│
+▼
 Groq Vision (LLaMA 4 Scout) — multi-image prompt
-       │
-       ▼
-analysisResult (string)
-       │
-       ▼
-Report.create() → MongoDB
-       │
-       ▼
-Response → Client
-```
+│
+▼
+analysisResult (string) → Report.create() → MongoDB → Response
 
 ---
 
 ## Folder Structure
 
-```
 healthlense/
 │
 ├── backend/
@@ -256,9 +198,9 @@ healthlense/
 │   │   └── RateLimiter.js        # MongoDB-backed sliding window rate limiter
 │   │
 │   ├── models/
-│   │   ├── User.js                # User schema (bcrypt pre-save hook)
-│   │   ├── Report.js              # Report schema
-│   │   ├── SymptomQuery.js        # SymptomQuery schema
+│   │   ├── User.js                # bcrypt pre-save hook
+│   │   ├── Report.js
+│   │   ├── SymptomQuery.js
 │   │   └── RateLimit.js          # TTL-indexed rate limit schema
 │   │
 │   ├── routes/
@@ -280,41 +222,26 @@ healthlense/
 │
 ├── frontend/
 │   ├── public/
-│   │   └── healthLense.png        # App logo / favicon
+│   │   └── healthLense.png
 │   │
 │   ├── src/
 │   │   ├── api/
-│   │   │   └── axios.js           # Axios instance with JWT interceptor + 401 handler
+│   │   │   └── axios.js           # Axios instance with JWT interceptor
 │   │   │
 │   │   ├── components/
 │   │   │   ├── layout/
-│   │   │   │   ├── sidebar/
-│   │   │   │   │   ├── Sidebar.jsx
-│   │   │   │   │   └── Sidebar.css
-│   │   │   │   └── navbar/
-│   │   │   │       ├── Navbar.jsx
-│   │   │   │       └── Navbar.css
+│   │   │   │   ├── sidebar/       # Sidebar.jsx + Sidebar.css
+│   │   │   │   └── navbar/        # Navbar.jsx + Navbar.css
 │   │   │   ├── report/
-│   │   │   │   ├── upload/
-│   │   │   │   │   ├── UploadZone.jsx
-│   │   │   │   │   └── UploadZone.css
-│   │   │   │   └── analysis/
-│   │   │   │       ├── AnalysisResult.jsx
-│   │   │   │       └── AnalysisResult.css
+│   │   │   │   ├── upload/        # UploadZone.jsx
+│   │   │   │   └── analysis/      # AnalysisResult.jsx
 │   │   │   ├── history/
-│   │   │   │   ├── reportcard/
-│   │   │   │   │   ├── ReportCard.jsx
-│   │   │   │   │   └── ReportCard.css
-│   │   │   │   └── symptomcard/
-│   │   │   │       ├── SymptomCard.jsx
-│   │   │   │       └── SymptomCard.css
+│   │   │   │   ├── reportcard/    # ReportCard.jsx
+│   │   │   │   └── symptomcard/   # SymptomCard.jsx
 │   │   │   ├── symptoms/
 │   │   │   │   ├── SymptomChips.jsx
-│   │   │   │   ├── TestSuggestions.jsx
-│   │   │   │   └── TestSuggestions.css
-│   │   │   ├── map/
-│   │   │   │   ├── LabsMap.jsx
-│   │   │   │   └── LabsMap.css
+│   │   │   │   └── TestSuggestions.jsx
+│   │   │   ├── map/               # LabsMap.jsx
 │   │   │   └── ToastContainer.jsx
 │   │   │
 │   │   ├── hooks/
@@ -322,162 +249,115 @@ healthlense/
 │   │   │   └── useSocket.js
 │   │   │
 │   │   ├── pages/
-│   │   │   ├── auth/
-│   │   │   │   ├── LoginPage.jsx
-│   │   │   │   ├── SignupPage.jsx
-│   │   │   │   └── AuthPage.css
-│   │   │   ├── dashboard/
-│   │   │   │   ├── DashboardPage.jsx
-│   │   │   │   └── DashboardPage.css
-│   │   │   ├── analyze/
-│   │   │   │   ├── AnalyzePage.jsx
-│   │   │   │   └── AnalyzePage.css
-│   │   │   ├── symptoms/
-│   │   │   │   ├── SymptomsPage.jsx
-│   │   │   │   └── SymptomsPage.css
-│   │   │   └── history/
-│   │   │       ├── HistoryPage.jsx
-│   │   │       └── HistoryPage.css
+│   │   │   ├── auth/              # LoginPage.jsx, SignupPage.jsx
+│   │   │   ├── dashboard/         # DashboardPage.jsx
+│   │   │   ├── analyze/           # AnalyzePage.jsx
+│   │   │   ├── symptoms/          # SymptomsPage.jsx
+│   │   │   └── history/           # HistoryPage.jsx
 │   │   │
 │   │   ├── store/
-│   │   │   └── authStore.js       # Zustand auth store (user, token, fetchMe, logout)
+│   │   │   └── authStore.js       # Zustand — user, token, fetchMe, logout
 │   │   │
 │   │   ├── utils/
 │   │   │   └── toast.js           # Pub/sub toast bus
 │   │   │
 │   │   ├── App.jsx                # BrowserRouter + route tree + auth guards
-│   │   ├── main.jsx               # ReactDOM.createRoot
+│   │   ├── main.jsx
 │   │   └── index.css              # Global styles + CSS variables
 │   │
 │   ├── index.html
 │   ├── vite.config.js
-│   ├── package.json
-│   └── .gitignore
+│   └── package.json
 │
 ├── .env.example
-├── .gitignore
 └── README.md
-```
 
 ---
 
 ## Database Schemas & ER Diagram
 
 ### User
-```
 User {
-  _id:           ObjectId  (PK)
-  name:          String    required, 2–50 chars
-  email:         String    required, unique, lowercase
-  password:      String    bcrypt-hashed, select: false
-  preferredLang: String    enum: en | hi | mr, default: en
-  createdAt:     Date
-  updatedAt:     Date
+_id:           ObjectId  (PK)
+name:          String    required, 2–50 chars
+email:         String    required, unique, lowercase
+password:      String    bcrypt-hashed (12 rounds), select: false
+preferredLang: String    enum: en | hi | mr, default: en
+createdAt:     Date
+updatedAt:     Date
 }
-```
 
 ### Report
-```
 Report {
-  _id:             ObjectId  (PK)
-  user:            ObjectId  (FK → User, indexed)
-  fileUrl:         String    Cloudinary secure URL (primary file)
-  filePublicId:    String    Cloudinary public_id for deletion
-  fileType:        String    enum: pdf | image | word
-  thumbnailUrl:    String    Cloudinary transformation URL
-  additionalFiles: [{
-    fileUrl:       String
-    filePublicId:  String
-    fileType:      String
-    thumbnailUrl:  String
-  }]
-  analysisType:    String    enum: full | conclusion
-  outputLang:      String    enum: en | hi | mr
-  analysisResult:  String    AI-generated text (excluded from list queries)
-  reportDate:      Date      default: now
-  createdAt:       Date
-  updatedAt:       Date
+_id:             ObjectId  (PK)
+user:            ObjectId  (FK → User, indexed)
+fileUrl:         String    Cloudinary secure URL
+filePublicId:    String    for deletion
+fileType:        String    enum: pdf | image | word
+thumbnailUrl:    String    Cloudinary transformation URL
+additionalFiles: [{ fileUrl, filePublicId, fileType, thumbnailUrl }]
+analysisType:    String    enum: full | conclusion
+outputLang:      String    enum: en | hi | mr
+analysisResult:  String    AI-generated text (excluded from list queries)
+reportDate:      Date
+createdAt:       Date
+updatedAt:       Date
 }
-```
 
 ### SymptomQuery
-```
 SymptomQuery {
-  _id:           ObjectId  (PK)
-  user:          ObjectId  (FK → User, indexed)
-  inputText:     String    required, patient's symptom description
-  detectedLang:  String    enum: en | hi | mr | hinglish
-  selectedChips: [String]  quick-select symptom tags
-  suggestions:   [{
-    testName:    String    required
-    reason:      String
-  }]
-  nearbyLabs:    [{
-    name:        String
-    lat:         Number
-    lon:         Number
-    address:     String
-    distance:    Number    km
-    type:        String    Hospital | Pathology Lab | etc.
-    phone:       String    null
-  }]
-  userLat:       Number
-  userLon:       Number
-  createdAt:     Date
-  updatedAt:     Date
+_id:           ObjectId  (PK)
+user:          ObjectId  (FK → User, indexed)
+inputText:     String    required
+detectedLang:  String    enum: en | hi | mr | hinglish
+selectedChips: [String]
+suggestions:   [{ testName: String, reason: String }]
+nearbyLabs:    [{ name, lat, lon, address, distance, type, phone }]
+userLat:       Number
+userLon:       Number
+createdAt:     Date
+updatedAt:     Date
 }
-```
 
 ### RateLimit (TTL Collection)
-```
 RateLimit {
-  _id:       ObjectId
-  key:       String    unique  e.g. "rl:userId"
-  requests:  [Number]  array of timestamps (ms)
-  updatedAt: Date      TTL index — auto-deleted after 120s
+key:       String    unique  e.g. "rl:userId"
+requests:  [Number]  array of timestamps (ms)
+updatedAt: Date      TTL index — auto-deleted after 120s
 }
-```
 
 ### ER Diagram
-
-```
-┌───────────────────┐       1        ┌───────────────────────┐
-│       User        │────────────────│        Report         │
-├───────────────────┤       N        ├───────────────────────┤
-│ _id (PK)          │                │ _id (PK)              │
-│ name              │                │ user (FK)             │
-│ email (unique)    │                │ fileUrl               │
-│ password          │                │ filePublicId          │
-│ preferredLang     │                │ fileType              │
-│ createdAt         │                │ thumbnailUrl          │
-│ updatedAt         │                │ additionalFiles[]     │
-└───────────────────┘                │ analysisType          │
-         │                           │ outputLang            │
-         │ 1                         │ analysisResult        │
-         │                           │ reportDate            │
-         │ N                         └───────────────────────┘
-         │
-         │       ┌───────────────────────────────┐
-         └───────│       SymptomQuery            │
-                 ├───────────────────────────────┤
-                 │ _id (PK)                      │
-                 │ user (FK)                     │
-                 │ inputText                     │
-                 │ detectedLang                  │
-                 │ selectedChips[]               │
-                 │ suggestions[]{testName,reason}│
-                 │ nearbyLabs[]{name,lat,lon,...}│
-                 │ userLat / userLon             │
-                 └───────────────────────────────┘
-
-                 ┌───────────────────────────────┐
-                 │         RateLimit             │
-                 ├───────────────────────────────┤
-                 │ key (unique)  "rl:userId"     │
-                 │ requests[]  timestamps (ms)   │
-                 │ updatedAt   TTL: 120s         │
-                 └───────────────────────────────┘
-```
+┌──────────────┐   1        ┌──────────────────────┐
+│     User     │────────────│        Report         │
+├──────────────┤   N        ├──────────────────────┤
+│ _id (PK)     │            │ _id (PK)              │
+│ name         │            │ user (FK)             │
+│ email        │            │ fileUrl / fileType    │
+│ password     │            │ thumbnailUrl          │
+│ preferredLang│            │ additionalFiles[]     │
+└──────────────┘            │ analysisType          │
+│                    │ outputLang            │
+│ 1                  │ analysisResult        │
+│ N                  └──────────────────────┘
+│
+│     ┌──────────────────────────────────┐
+└─────│         SymptomQuery             │
+├──────────────────────────────────┤
+│ _id (PK)                         │
+│ user (FK)                        │
+│ inputText / detectedLang         │
+│ selectedChips[]                  │
+│ suggestions[]{ testName, reason }│
+│ nearbyLabs[]{ name, lat, lon, …} │
+│ userLat / userLon                │
+└──────────────────────────────────┘
+         ┌──────────────────────────────────┐
+         │           RateLimit              │
+         ├──────────────────────────────────┤
+         │ key (unique)  "rl:userId"        │
+         │ requests[]  timestamps (ms)      │
+         │ updatedAt   TTL: 120s            │
+         └──────────────────────────────────┘
 
 ---
 
@@ -499,17 +379,17 @@ All protected routes require `Authorization: Bearer <token>`.
 | Method | Endpoint | Auth | Rate Limit | Description |
 |---|---|---|---|---|
 | POST | `/analyze` | ✓ | ✓ | Upload & analyze file(s) |
-| GET | `/` | ✓ | | List all user reports (no analysisResult) |
-| GET | `/:id` | ✓ | | Get single report (with analysisResult) |
+| GET | `/` | ✓ | | List all user reports (no `analysisResult`) |
+| GET | `/:id` | ✓ | | Get single report (with `analysisResult`) |
 | DELETE | `/:id` | ✓ | | Delete report + Cloudinary files |
 
 **POST `/analyze` — multipart/form-data**
-```
-Field       Type      Required  Notes
-files       File[]    yes       1 PDF/Word OR up to 5 images, max 10MB each
-analysisType string   no        "full" (default) | "conclusion"
-outputLang  string    no        "en" (default) | "hi" | "mr"
-```
+
+| Field | Type | Required | Notes |
+|---|---|---|---|
+| `files` | File[] | yes | 1 PDF/Word OR up to 5 images, max 10 MB each |
+| `analysisType` | string | no | `"full"` (default) \| `"conclusion"` |
+| `outputLang` | string | no | `"en"` (default) \| `"hi"` \| `"mr"` |
 
 ### Symptoms — `/api/symptoms`
 
@@ -520,7 +400,7 @@ outputLang  string    no        "en" (default) | "hi" | "mr"
 | GET | `/:id` | ✓ | | Get single query |
 | DELETE | `/:id` | ✓ | | Delete query |
 
-**POST `/analyze` — JSON**
+**POST `/analyze` — JSON body**
 ```json
 {
   "inputText":     "Kal se sir dard ho raha hai",
@@ -541,11 +421,15 @@ outputLang  string    no        "en" (default) | "hi" | "mr"
 
 Connect with `{ auth: { token } }`.
 
-| Event (emit) | Payload | Description |
+**Emit:**
+
+| Event | Payload | Description |
 |---|---|---|
 | `find:labs` | `{ lat, lon, radiusKm? }` | Request nearby labs |
 
-| Event (receive) | Payload | Description |
+**Receive:**
+
+| Event | Payload | Description |
 |---|---|---|
 | `labs:loading` | `{ message }` | Server started searching |
 | `labs:result` | `{ labs[] }` | Array of nearby places |
@@ -560,7 +444,7 @@ Connect with `{ auth: { token } }`.
 ```env
 # Server
 PORT=5000
-CLIENT_URL=http://localhost:5173
+ALLOWED_ORIGINS=http://localhost:5173
 
 # MongoDB
 MONGO_URI=mongodb+srv://<user>:<pass>@cluster.mongodb.net/healthlense
@@ -602,21 +486,20 @@ VITE_SOCKET_URL=http://localhost:5000
 
 ### Prerequisites
 
-- Node.js ≥ 20.x
-- npm ≥ 9.x
+- Node.js ≥ 20.x and npm ≥ 9.x
 - MongoDB Atlas account (free tier works)
 - Cloudinary account (free tier)
 - Groq API key — [console.groq.com](https://console.groq.com)
 - Resend account — [resend.com](https://resend.com) (optional, for emails)
 
-### 1. Clone the repository
+### 1. Clone
 
 ```bash
 git clone https://github.com/yourusername/healthlense.git
 cd healthlense
 ```
 
-### 2. Backend setup
+### 2. Backend
 
 ```bash
 cd backend
@@ -626,13 +509,13 @@ cp .env.example .env
 node server.js
 ```
 
-The server starts at `http://localhost:5000`. Confirm with:
+Verify:
 ```bash
 curl http://localhost:5000/health
 # → {"status":"ok","timestamp":"..."}
 ```
 
-### 3. Frontend setup
+### 3. Frontend
 
 ```bash
 cd ../frontend
@@ -642,15 +525,15 @@ cp .env.example .env
 npm run dev
 ```
 
-The app opens at `http://localhost:5173`.
+App opens at `http://localhost:5173`.
 
 ### 4. Verify Cloudinary
 
 Upload any image through the Analyze page and confirm it appears in your Cloudinary media library under `healthlense/reports/`.
 
-### 5. (Optional) Configure Resend
+### 5. Configure Resend (optional)
 
-Add a verified sending domain in Resend, set `RESEND_FROM_EMAIL` accordingly. Without this, welcome emails fail silently (the API call is non-blocking).
+Add a verified sending domain in Resend, then set `RESEND_FROM_EMAIL`. Without this, welcome emails fail silently (non-blocking).
 
 ---
 
@@ -676,25 +559,7 @@ Add a verified sending domain in Resend, set `RESEND_FROM_EMAIL` accordingly. Wi
 
 ### Finding Nearby Labs
 
-The app requests geolocation on the Symptoms page. If granted:
-- Your position is shown with a blue marker.
-- Nearby hospitals, pathology labs, diagnostic centres, clinics, and pharmacies appear as green markers.
-- Hover a marker to see the name; click to see full details including distance and type.
-- A sorted list appears below the map.
-
----
-
-## Screenshots
-
-> Screenshots can be added here by replacing the placeholder paths.
-
-| Dashboard | Analyze | Symptoms | History |
-|---|---|---|---|
-| ![Dashboard](docs/screenshots/dashboard.png) | ![Analyze](docs/screenshots/analyze.png) | ![Symptoms](docs/screenshots/symptoms.png) | ![History](docs/screenshots/history.png) |
-
-| Login | Signup | Map | Report Card |
-|---|---|---|---|
-| ![Login](docs/screenshots/login.png) | ![Signup](docs/screenshots/signup.png) | ![Map](docs/screenshots/map.png) | ![Card](docs/screenshots/reportcard.png) |
+The app requests geolocation on the Symptoms page. If granted, your position appears as a blue marker and nearby hospitals, pathology labs, diagnostic centres, clinics, and pharmacies appear as green markers. Hover to see the name; click for full details including distance and type. A sorted list also renders below the map.
 
 ---
 
@@ -706,26 +571,26 @@ HealthLense uses a custom sliding window rate limiter backed by MongoDB (no Redi
 
 - **Window:** 60 seconds (configurable via `GROK_RATE_LIMIT_PER_MIN`)
 - **Default limit:** 10 AI requests per user per minute
-- **Key:** `rl:<userId>` (or `rl:<IP>` if unauthenticated)
-- **Storage:** TTL-indexed `RateLimit` collection auto-purges documents after 120 seconds
-- **Fail-open:** If MongoDB is unavailable, the limiter is bypassed (logged as warning)
+- **Key:** `rl:<userId>`
+- **Storage:** TTL-indexed `RateLimit` collection — auto-purges after 120 seconds
+- **Fail-open:** MongoDB unavailability is logged as a warning and bypasses the limiter
 - **Response headers:** `X-RateLimit-Limit`, `X-RateLimit-Remaining`
 - **429 response:** Includes `retryAfter` seconds until the oldest request expires
 
 ### AI Prompt Optimization
 
-- PDF pages are capped at 4 per analysis call to stay within Groq's context limits
+- PDF pages are capped at 4 per call to stay within Groq context limits
 - `max_tokens` scales with page count: `min(1500 + (pages - 1) × 400, 4000)`
 - Conclusion mode is capped at 600 tokens for faster responses
-- Temperature is fixed at 0.1 to maximize factual accuracy over creativity
+- Temperature is fixed at 0.1 for factual accuracy
 
 ### Nominatim (Lab Search)
 
-- Respects the Nominatim ToS: 1 request/second enforced via `sleep(1100ms)`
+- Respects Nominatim ToS: 1 request/second enforced via `sleep(1100ms)`
 - Search radius expands progressively (10km → 25km → 50km) until ≥3 results found
-- 5 search terms × up to 3 radius tiers = up to 15 API calls per symptom analysis
+- Up to 15 API calls per symptom analysis (5 terms × 3 radius tiers)
 - `AbortSignal.timeout(8000)` prevents hanging requests
-- Deduplication by normalized name prevents showing the same lab twice
+- Deduplication by normalized name prevents duplicates
 
 ---
 
@@ -735,33 +600,18 @@ HealthLense uses a custom sliding window rate limiter backed by MongoDB (no Redi
 |---|---|
 | Password storage | bcrypt with 12 salt rounds |
 | Authentication | JWT (HS256), 7-day expiry, verified on every protected route |
-| Authorisation | All DB queries are scoped to `req.user._id` — users cannot access other users' data |
-| File uploads | Multer enforces 10MB limit and MIME type allowlist server-side |
+| Authorisation | All DB queries scoped to `req.user._id` |
+| File uploads | Multer enforces 10 MB limit and MIME type allowlist server-side |
 | Rate limiting | Per-user sliding window prevents AI endpoint abuse |
-| CORS | Restricted to `CLIENT_URL` env variable |
+| CORS | Restricted to `ALLOWED_ORIGINS` env variable |
 | Token storage | `localStorage` with automatic 401-triggered logout |
-| Error leakage | Production errors return generic messages; stack traces are server-console only |
+| Error leakage | Production errors return generic messages; stack traces stay server-side |
 | Cloudinary cleanup | Report deletion triggers `cloudinary.uploader.destroy` for all associated files |
 
 ---
 
-## Roadmap
-
-- [ ] Google Vision / Azure Form Recogniser fallback for improved DOCX support
-- [ ] PDF annotation — highlight abnormal values directly on the document
-- [ ] HL7 / FHIR structured output for integration with EHR systems
-- [ ] WhatsApp bot interface for feature-phone users
-- [ ] Report sharing via signed URL (7-day expiry)
-- [ ] Dark/light theme toggle
-- [ ] PWA support with offline history
-- [ ] Doctor referral integration (partner labs API)
-- [ ] Bengali and Tamil language support
-
----
 
 ## Contributing
-
-Contributions are welcome! Please follow these steps:
 
 1. Fork the repository.
 2. Create a feature branch: `git checkout -b feature/your-feature-name`
@@ -772,8 +622,6 @@ Contributions are welcome! Please follow these steps:
 ### Commit Convention
 
 This project uses [Conventional Commits](https://www.conventionalcommits.org/):
-
-```
 feat:     A new feature
 fix:      A bug fix
 docs:     Documentation changes
@@ -782,42 +630,18 @@ refactor: Code restructure, no feature/fix
 perf:     Performance improvement
 test:     Adding or fixing tests
 chore:    Tooling, dependencies
-```
 
 ### Code Style
 
 - ES Modules on the frontend; CommonJS on the backend.
-- No ESLint rule suppression without a comment explaining why.
-- All new API routes must have corresponding error handling.
+- No ESLint rule suppression without an explanatory comment.
+- All new API routes must include corresponding error handling.
 - Mongoose queries must always be scoped to `req.user._id`.
 
 ---
 
-## License
-
-Distributed under the MIT License. See [`LICENSE`](LICENSE) for full terms.
-
-```
-MIT License
-
-Copyright (c) 2025 HealthLense
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-```
-
----
 
 ## Author
-
-**HealthLense** was designed and built by:
 
 | | |
 |---|---|
@@ -835,7 +659,7 @@ copies or substantial portions of the Software.
 - [Cloudinary](https://cloudinary.com/) — for PDF-to-image conversion and media management
 - [OpenStreetMap & Nominatim](https://nominatim.openstreetmap.org/) — for open geocoding and place data
 - [Resend](https://resend.com/) — for clean transactional email delivery
-- [Leaflet.js](https://leafletjs.com/) — for the lightweight, open-source mapping library
+- [Leaflet.js](https://leafletjs.com/) — for the lightweight open-source mapping library
 - [Outfit Font](https://fonts.google.com/specimen/Outfit) — for the clean UI typography
 - [express-async-errors](https://github.com/davidbanham/express-async-errors) — for painless async error propagation
 
