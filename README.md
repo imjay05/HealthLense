@@ -127,16 +127,17 @@ HealthLense bridges the gap between raw medical data and patient understanding:
 
 ## System Architecture
 
+```
 ┌─────────────────────────────────────────────────────────────────┐
 │                        CLIENT (React + Vite)                    │
 │                                                                 │
-│  ┌──────────┐  ┌──────────┐  ┌───────────┐  ┌──────────────┐  │
-│  │ AuthPages│  │AnalyzePg │  │SymptomsPage│  │HistoryPage   │  │
-│  └────┬─────┘  └────┬─────┘  └─────┬─────┘  └──────┬───────┘  │
-│       └─────────────┴──────────────┴────────────────┘          │
+│  ┌──────────┐  ┌──────────┐  ┌───────────┐  ┌──────────────┐    │
+│  │ AuthPages│  │AnalyzePg │  │SymptomsPage│ │HistoryPage   │    │
+│  └────┬─────┘  └────┬─────┘  └─────┬─────┘  └──────┬───────┘    │
+│       └─────────────┴──────────────┴───────────────┘            │
 │                   Axios + JWT Interceptor / Socket.IO Client    │
 └──────────────────────────────┬──────────────────────────────────┘
-│ HTTP / WebSocket
+                               │ HTTP / WebSocket
 ┌──────────────────────────────▼──────────────────────────────────┐
 │                     SERVER (Express + Socket.IO)                │
 │                                                                 │
@@ -153,8 +154,10 @@ HealthLense bridges the gap between raw medical data and patient understanding:
 │         Welcome Email · Admin Signup Notification               │
 └─────────────────────────────────────────────────────────────────┘
 
+```
 ### Data Flow — Report Analysis
 
+```
 User uploads file(s)
 │
 ▼
@@ -176,10 +179,12 @@ Groq Vision (LLaMA 4 Scout) — multi-image prompt
 ▼
 analysisResult (string) → Report.create() → MongoDB → Response
 
+```
 ---
 
 ## Folder Structure
 
+```
 healthlense/
 │
 ├── backend/
@@ -272,6 +277,7 @@ healthlense/
 ├── .env.example
 └── README.md
 
+```
 ---
 
 ## Database Schemas & ER Diagram
@@ -327,6 +333,8 @@ updatedAt: Date      TTL index — auto-deleted after 120s
 }
 
 ### ER Diagram
+
+```
 ┌──────────────┐   1        ┌──────────────────────┐
 │     User     │────────────│        Report         │
 ├──────────────┤   N        ├──────────────────────┤
@@ -359,6 +367,7 @@ updatedAt: Date      TTL index — auto-deleted after 120s
          │ updatedAt   TTL: 120s            │
          └──────────────────────────────────┘
 
+```
 ---
 
 ## API Reference
