@@ -21,7 +21,9 @@ markdown<div align="center">
 [![JWT](https://img.shields.io/badge/JWT-Auth-000000?style=flat-square&logo=jsonwebtokens&logoColor=white)](https://jwt.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
 
-[Live Demo](#live-demo) 
+[Live Demo - https://healthlense.app](https://healthlense.vercel.app/)
+> **Note:** The live demo uses free-tier Groq API credits. High-volume usage may result in temporary rate limiting.
+
 
 </div>
 
@@ -48,17 +50,6 @@ HealthLense bridges the gap between raw medical data and patient understanding:
 2. **Multilingual Symptom Checker** — Describe symptoms in English, Hindi, Marathi, or Hinglish. Receive a curated list of recommended diagnostic tests with clinical reasoning.
 3. **Nearby Lab Finder** — Automatically surface pathology labs, hospitals, diagnostic centres, and pharmacies close to the user's current location using real map data.
 4. **Full History** — Every report analysis and symptom query is persisted and accessible, with the ability to revisit and delete records.
-
----
-
-## Live Demo
-
-| Environment | URL |
-|---|---|
-| Production | [https://healthlense.app](https://healthlense.vercel.app/) |
-| API Health | [https://api.healthlense.app/health](https://healthlense.onrender.com/health) |
-
-> **Note:** The live demo uses free-tier Groq API credits. High-volume usage may result in temporary rate limiting.
 
 ---
 
