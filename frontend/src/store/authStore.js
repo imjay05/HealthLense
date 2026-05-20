@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import api from '../api/axios'
+import { disconnectSocket } from '../hooks/useSocket'
 
 const useAuthStore = create((set, get) => ({
   user: null,
@@ -13,6 +14,7 @@ const useAuthStore = create((set, get) => ({
 
   logout: () => {
     localStorage.removeItem('token')
+    disconnectSocket()          // clean up WebSocket on logout
     set({ user: null, token: null, loading: false })
   },
 
@@ -24,6 +26,7 @@ const useAuthStore = create((set, get) => ({
       set({ user: data, loading: false })
     } catch {
       localStorage.removeItem('token')
+      disconnectSocket()
       set({ user: null, token: null, loading: false })
     }
   },
