@@ -4,7 +4,7 @@ markdown<div align="center">
 
 ### AI-Powered Medical Report Analysis & Symptom Intelligence Platform
 
-*Upload reports. Describe symptoms. Find nearby labs. Get instant insights — in English, Hindi, or Marathi.*
+*Upload reports. Describe symptoms. Find nearby labs or Hospitals. Get instant insights — in English, Hindi, or Marathi.*
 
 ---
 
