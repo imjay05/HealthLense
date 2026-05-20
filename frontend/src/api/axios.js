@@ -5,7 +5,7 @@ const api = axios.create({
   timeout: 60000, // 60s for Grok calls
 })
 
-// Attach JWT to every request
+
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token')
   

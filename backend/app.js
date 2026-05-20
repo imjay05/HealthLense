@@ -12,10 +12,24 @@ const historyRoutes = require("./routes/HistoryRoutes");
 
 const app = express();
 
+const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || "")
+  .split(",")
+  .map(o => o.trim())
+  .filter(Boolean);
+
+// Warn at startup — catches misconfigured deployments early
+if (ALLOWED_ORIGINS.length === 0) {
+  console.warn("⚠️  WARNING: ALLOWED_ORIGINS is not set. All browser requests will be CORS-blocked.");
+}
+
 // Middleware 
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "http://localhost:5173",
+   origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      if (ALLOWED_ORIGINS.includes(origin)) return callback(null, true);
+      callback(new Error(`CORS blocked: ${origin}`));
+    },
     credentials: true,
   })
 );
