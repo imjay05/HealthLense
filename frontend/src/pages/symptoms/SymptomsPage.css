@@ -1,0 +1,97 @@
+/* ── Page shell ──────────────────────────────────────────────── */
+.symptoms-page {
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  grid-template-rows: auto auto;
+  grid-template-areas:
+    "left  right"
+    "map   map";
+  gap: 24px;
+  align-items: start;
+  width: 100%;
+}
+
+/* ── Left panel ──────────────────────────────────────────────── */
+.symp-left {
+  grid-area: left;
+}
+
+/* ── Right panel ─────────────────────────────────────────────── */
+.symp-right {
+  grid-area: right;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+  align-self: start;
+}
+
+/* ── Map row — card styling lives here, not on a wrapper div ─── */
+.symp-map {
+  grid-area: map;
+  margin-top: 8px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 2px 16px rgba(18, 37, 58, 0.08);
+  overflow: hidden;   /* clips the map to the card's rounded corners */
+}
+
+/* ── Submit button ───────────────────────────────────────────── */
+.symp-submit {
+  width: 100%;
+  justify-content: center;
+  padding: 13px;
+  margin-top: 18px;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
+}
+
+/* ── Geo error line ──────────────────────────────────────────── */
+.geo-status {
+  font-size: 0.75rem;
+  color: var(--text-muted, #7a9bb8);
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ── Placeholder (before analysis) ──────────────────────────── */
+.symp-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  text-align: center;
+  min-height: 340px;
+  border: 1.5px dashed #c8dcea;
+  background: rgba(255,255,255,0.55);
+  border-radius: 16px;
+  backdrop-filter: blur(4px);
+}
+.placeholder-icon  { font-size: 2.8rem; opacity: 0.5; }
+.placeholder-title { font-size: 1rem; font-weight: 600; color: #12253a; }
+.placeholder-sub   {
+  font-size: 0.82rem;
+  color: #7a9bb8;
+  max-width: 280px;
+  line-height: 1.6;
+}
+
+/* ── Responsive ──────────────────────────────────────────────── */
+@media (max-width: 960px) {
+  .symptoms-page {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "left"
+      "right"
+      "map";
+  }
+}
+
+@media (max-width: 600px) {
+  .symptoms-page { gap: 16px; }
+  .symp-submit   { padding: 12px; font-size: 0.9rem; }
+}

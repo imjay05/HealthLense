@@ -1,0 +1,67 @@
+.suggestions {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.sug-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sug-summary {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  padding: 12px 16px;
+  background: var(--bg-elevated);
+  border-radius: var(--r-md);
+  border-left: 2px solid var(--accent);
+}
+
+
+.sug-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sug-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 16px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  transition: border-color 0.15s;
+}
+.sug-item:hover { border-color: var(--border-light); }
+
+.sug-rank {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  padding-top: 2px;
+  flex-shrink: 0;
+  min-width: 20px;
+}
+
+.sug-body { 
+  flex: 1; 
+  min-width: 0; 
+}
+
+.sug-name { 
+  font-size: 0.875rem; 
+  font-weight: 600; 
+  color: var(--text-primary); 
+}
+
+.sug-reason {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-top: 3px;
+  line-height: 1.5;
+}

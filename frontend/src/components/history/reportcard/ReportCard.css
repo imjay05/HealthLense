@@ -1,0 +1,173 @@
+.report-card { 
+  transition: border-color 0.2s; 
+}
+
+.report-card.expanded { 
+  border-color: var(--border-light); 
+}
+
+.rc-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  cursor: pointer;
+}
+
+.rc-thumb {
+  width: 44px;
+  height: 54px;
+  border-radius: var(--r-sm);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+  font-size: 1.3rem;
+}
+
+.rc-thumb img { 
+  width: 100%; 
+  height: 100%; 
+  object-fit: cover; 
+}
+
+.rc-meta { 
+  flex: 1; 
+  min-width: 0; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 5px; 
+}
+
+.rc-top { 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  gap: 8px; 
+  flex-wrap: wrap; 
+}
+
+.rc-type { 
+  font-size: 0.82rem; 
+  font-weight: 600; 
+  color: var(--text-primary); 
+}
+
+.rc-badges { 
+  display: flex; 
+  gap: 6px; 
+  flex-wrap: wrap; 
+}
+
+.rc-date { 
+  font-size: 0.75rem; 
+  color: var(--text-muted); 
+}
+
+.rc-markers { 
+  display: flex; 
+  gap: 6px; 
+  flex-wrap: wrap; 
+  margin-top: 2px; 
+}
+
+.rc-actions { 
+  display: flex; 
+  align-items: center; 
+  gap: 6px; 
+  flex-shrink: 0; 
+}
+
+.rc-action-btn { 
+  padding: 6px 8px; 
+}
+
+.rc-download { 
+  color: var(--text-muted); 
+}
+
+.rc-download:hover { 
+  color: var(--accent) !important; 
+  border-color: rgba(13,184,160,0.3) !important; 
+}
+
+.rc-delete { 
+  color: var(--text-muted); 
+}
+
+.rc-delete:hover { 
+  color: var(--red) !important; 
+  border-color: rgba(232,84,84,0.3) !important; 
+}
+
+.rc-confirm { 
+  display: flex; 
+  align-items: center; 
+  gap: 6px; 
+}
+
+.rc-confirm-btn {
+  padding: 6px 12px;
+  background: var(--red);
+  color: #fff;
+  border-radius: var(--r-md);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.rc-confirm-btn:hover { 
+  background: #c43a3a; 
+}
+
+.rc-divider { 
+  height: 1px; 
+  background: var(--border); 
+  margin: 14px 0; 
+}
+
+.rc-body { 
+  padding-top: 0; 
+}
+
+.rc-loading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  padding: 12px 0;
+}
+
+.rc-analysis {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.rc-heading {
+  font-weight: 600;
+  color: var(--accent);
+  font-size: 0.85rem;
+  margin: 14px 0 4px;
+  letter-spacing: 0.02em;
+}
+
+.rc-heading:first-child { 
+  margin-top: 0; 
+}
+
+.rc-line { 
+  font-size: 0.82rem; 
+  color: var(--text-secondary); 
+  line-height: 1.7; 
+}
+
+.rc-no-analysis { 
+  font-size: 0.82rem; 
+  color: var(--text-muted); 
+  font-style: italic; 
+}
