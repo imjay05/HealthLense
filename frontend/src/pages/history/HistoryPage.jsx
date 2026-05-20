@@ -41,9 +41,21 @@ export default function HistoryPage() {
   })
 
   const tabs = [
-    { id: 'all',      label: 'All',      count: history.length },
-    { id: 'reports',  label: 'Reports',  count: history.filter(i => i.itemType === 'report').length },
-    { id: 'symptoms', label: 'Symptoms', count: history.filter(i => i.itemType === 'symptom').length },
+    { 
+      id: 'all',      
+      label: 'All',      
+      count: history.length 
+    },
+    { 
+      id: 'reports',  
+      label: 'Reports',  
+      count: history.filter(i => i.itemType === 'report').length 
+    },
+    { 
+      id: 'symptoms', 
+      label: 'Symptoms', 
+      count: history.filter(i => i.itemType === 'symptom').length 
+    },
   ]
 
   return (
@@ -67,8 +79,8 @@ export default function HistoryPage() {
             <p className="empty-title">Nothing here yet</p>
             <p className="empty-sub">
               {activeTab === 'reports'  ? 'Upload a medical report to get started.'
-               : activeTab === 'symptoms' ? 'Describe your symptoms to see suggestions.'
-               : 'Your activity will appear here.'}
+                                        : activeTab === 'symptoms' ? 'Describe your symptoms to see suggestions.'
+                                                                   : 'Your activity will appear here.'}
             </p>
           </div>
         ) : filtered.map((item, i) => (
@@ -92,6 +104,7 @@ export default function HistoryPage() {
     </div>
   )
 }
+
 
 function SkeletonList() {
   return (

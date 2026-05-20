@@ -8,14 +8,12 @@ import { toast } from '../../utils/toast'
 import './SymptomsPage.css'
 
 export default function SymptomsPage() {
-  const [inputText, setInputText]         = useState('')
+  const [inputText, setInputText] = useState('')
   const [selectedChips, setSelectedChips] = useState([])
-  const [loading, setLoading]             = useState(false)
-  const [result, setResult]               = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [result, setResult] = useState(null)
   const { coords, error: geoError, request: requestGeo } = useGeolocation()
 
-  // Request location on mount — browser will show permission popup
-  // on first visit, and use cached permission on repeat visits
   useEffect(() => {
     requestGeo()
   }, [])
@@ -77,8 +75,7 @@ export default function SymptomsPage() {
             className="input textarea"
             placeholder="e.g. Kal se sir dard ho raha hai… or Headache since yesterday with mild fever…"
             value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
-          />
+            onChange={(e) => setInputText(e.target.value)}/>
 
           <div style={{ marginTop: 14 }}>
             <label className="form-label">Quick Add Symptoms</label>
@@ -122,8 +119,6 @@ export default function SymptomsPage() {
         )}
       </div>
 
-      {/* ── MAP ROW: LabsMap renders its own card-like wrapper.   */}
-      {/* No extra .card div here — that was clipping the map.    */}
       <div className="symp-map animate-fadeUp delay-1">
         <LabsMap labs={nearbyLabs} userCoords={coords} />
       </div>

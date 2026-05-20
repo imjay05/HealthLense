@@ -18,8 +18,16 @@ export default function DashboardPage() {
   }, [])
 
   const stats = [
-    { label: 'Reports Analyzed', value: data?.recentReports?.length ?? '—', icon: '📄' },
-    { label: 'Symptom Queries',  value: data?.recentQueries?.length  ?? '—', icon: '🩺' },
+    { 
+      label: 'Reports Analyzed', 
+      value: data?.recentReports?.length ?? '—', 
+      icon: '📄' 
+    },
+    { 
+      label: 'Symptom Queries',  
+      value: data?.recentQueries?.length  ?? '—', 
+      icon: '🩺' 
+    },
   ]
 
   return (

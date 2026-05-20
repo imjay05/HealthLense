@@ -30,8 +30,18 @@
   border: none;
   font-family: inherit;
 }
-.history-tab:hover  { color: #12253a; background: #f4f8fc; }
-.history-tab.active { background: #f4f8fc; color: #12253a; font-weight: 500; }
+
+.history-tab:hover { 
+  color: #12253a; 
+  background: #f4f8fc; 
+}
+
+.history-tab.active { 
+  background: #f4f8fc; 
+  color: #12253a; 
+  font-weight: 500; 
+}
+
 .tab-count {
   font-family: var(--font-mono);
   font-size: 0.68rem;
@@ -40,12 +50,17 @@
   padding: 1px 7px;
   border-radius: 99px;
 }
+
 .history-tab.active .tab-count {
   background: rgba(13,184,160,0.10);
   color: #0a9080;
 }
 
-.history-list { display: flex; flex-direction: column; gap: 10px; }
+.history-list { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 10px; 
+}
 
 .history-empty {
   display: flex;
@@ -58,4 +73,8 @@
   font-size: 0.85rem;
 }
 
-.history-skeleton { display: flex; align-items: center; gap: 14px; }
+.history-skeleton { 
+  display: flex; 
+  align-items: center; 
+  gap: 14px; 
+}

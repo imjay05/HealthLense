@@ -10,6 +10,7 @@ import DashboardPage from './pages/dashboard/DashboardPage'
 import AnalyzePage   from './pages/analyze/AnalyzePage'
 import SymptomsPage  from './pages/symptoms/SymptomsPage'
 import HistoryPage   from './pages/history/HistoryPage'
+import './App.css'
 
 function AppShell() {
   return (
