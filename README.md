@@ -55,8 +55,8 @@ HealthLense bridges the gap between raw medical data and patient understanding:
 
 | Environment | URL |
 |---|---|
-| Production | [https://healthlense.app](https://healthlense.app) |
-| API Health | [https://api.healthlense.app/health](https://api.healthlense.app/health) |
+| Production | [https://healthlense.app](https://healthlense.vercel.app/) |
+| API Health | [https://api.healthlense.app/health](https://healthlense.onrender.com/health) |
 
 > **Note:** The live demo uses free-tier Groq API credits. High-volume usage may result in temporary rate limiting.
 
