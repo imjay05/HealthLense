@@ -19,7 +19,6 @@ markdown<div align="center">
 [![Resend](https://img.shields.io/badge/Resend-Email-000000?style=flat-square&logo=mail.ru&logoColor=white)](https://resend.com/)
 [![Leaflet](https://img.shields.io/badge/Leaflet-Maps-199900?style=flat-square&logo=leaflet&logoColor=white)](https://leafletjs.com/)
 [![JWT](https://img.shields.io/badge/JWT-Auth-000000?style=flat-square&logo=jsonwebtokens&logoColor=white)](https://jwt.io/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
 
 [Live Demo - https://healthlense.app](https://healthlense.vercel.app/)
 
