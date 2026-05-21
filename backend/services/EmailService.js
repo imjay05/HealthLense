@@ -11,10 +11,13 @@ const sendWelcomeEmail = async ({ name, email }) => {
       from: FROM_EMAIL,
       to: email,
       subject: "Welcome to HealthLense",
-      text: `Hi ${name},
-             \n\nYour HealthLense account is ready.
-             \n\nYou can now analyze medical reports, check symptoms, and find nearby labs.
-             \n\nOpen the app: ${process.env.CLIENT_URL || "https://healthlense.app"}\n\n— HealthLense Team`,
+      text: [
+        `Hi ${name},`,
+        `Your HealthLense account is ready.`,
+        `You can now analyze medical reports, check symptoms, and find nearby labs.`,
+        `Open the app: ${process.env.ALLOWED_ORIGINS || "https://healthlense.app"}`,
+        `— HealthLense Team`,
+      ].join("\n\n"),
     });
   } catch (err) {
     console.warn("Welcome email failed:", err.message);
@@ -29,10 +32,12 @@ const sendAdminSignupNotification = async ({ name, email }) => {
       from: FROM_EMAIL,
       to: ADMIN_EMAIL,
       subject: `[HealthLense] New signup — ${name}`,
-      text: `New user registered.
-             \n\nName: ${name}
-                \nEmail: ${email}
-                \nTime: ${new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })} IST`,
+      text: [
+        `New user registered.`,
+        `Name: ${name}`,
+        `Email: ${email}`,
+        `Time: ${new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })} IST`,
+      ].join("\n"),
     });
   } catch (err) {
     console.warn("Admin notification email failed:", err.message);
