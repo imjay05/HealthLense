@@ -131,12 +131,6 @@ export default function UploadZone({ onFiles, files = [] }) {
       </div>
 
       {error && <p className="upload-error">{error}</p>}
-
-      {files.length > 0 && (
-        <p className="upload-count">
-          {files.length} / {MAX_FILES} file{files.length > 1 ? 's' : ''} selected
-        </p>
-      )}
     </div>
   )
 }
