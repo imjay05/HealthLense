@@ -71,9 +71,7 @@ const getQuery = async (req, res) => {
   const query = await SymptomQuery.findOne({ _id: req.params.id, user: req.user._id });
 
   if (!query){
-    return res
-              .status(404)
-              .json({ message: "Query not found" });
+    return res.status(404).json({ message: "Query not found" });
   }
 
   res.json({ query });
@@ -83,9 +81,7 @@ const deleteQuery = async (req, res) => {
   const query = await SymptomQuery.findOne({ _id: req.params.id, user: req.user._id });
 
   if (!query){
-    return res
-             .status(404)
-             .json({ message: "Query not found" });
+    return res.status(404).json({ message: "Query not found" });
   }
 
   await query.deleteOne();

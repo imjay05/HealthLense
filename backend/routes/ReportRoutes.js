@@ -16,7 +16,6 @@ const upload = multer({
     } else {
       cb(new Error("Only JPG, PNG, WEBP, and PDF files are allowed"), false);
     }
-
   },
 });
 
