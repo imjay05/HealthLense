@@ -61,7 +61,7 @@ const reportSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-ReportSchema.index({ 
+reportSchema.index({ 
   user: 1, 
   filePublicId: 1, 
   fileDate: 1 
@@ -69,4 +69,4 @@ ReportSchema.index({
   unique: true 
 });
 
-module.exports = mongoose.model("Report", ReportSchema);
+module.exports = mongoose.model("Report", reportSchema);
