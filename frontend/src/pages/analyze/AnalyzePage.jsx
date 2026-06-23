@@ -12,12 +12,12 @@ const LANGS = [
 ]
 
 export default function AnalyzePage() {
-  const [files, setFiles] = useState([])
+  const [files, setFiles]           = useState([])
   const [analysisType, setAnalysisType] = useState('full')
   const [outputLang, setOutputLang] = useState('en')
-  const [loading, setLoading] = useState(false)
-  const [result, setResult] = useState(null)
-  const [progress, setProgress] = useState('')
+  const [loading, setLoading]       = useState(false)
+  const [result, setResult]         = useState(null)   // { analysisResult, analysisType, outputLang }
+  const [progress, setProgress]     = useState('')
 
   const submit = async () => {
     if (files.length === 0) return toast.error('Please upload at least one file')
@@ -47,7 +47,21 @@ export default function AnalyzePage() {
       const { data } = await api.post('/reports/analyze', fd, {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
-      setResult(data.report)
+
+      const report  = data.report
+      const entries = report?.analyses ?? []
+      const latest  = entries.length
+        ? [...entries].sort((a, b) => new Date(b.analyzedAt) - new Date(a.analyzedAt))[0]
+        : null
+
+      if (latest) {
+        setResult({
+          analysisResult: latest.analysisResult,
+          analysisType:   latest.analysisType,
+          outputLang:     latest.outputLang,
+        })
+      }
+
       toast.success('Report analyzed successfully')
     } catch (err) {
       if (err.response?.status === 429) {
@@ -74,7 +88,7 @@ export default function AnalyzePage() {
         <UploadZone files={files} onFiles={setFiles} />
       </div>
 
-      {/* ── Options + Result ── */}
+      {/* ── Options ── */}
       <div className="card animate-fadeUp delay-1">
         <h3 className="section-title">Analysis Options</h3>
         <div className="options-grid">
@@ -82,16 +96,8 @@ export default function AnalyzePage() {
             <label className="form-label">Analysis Type</label>
             <div className="option-toggle">
               {[
-                { 
-                  v: 'full',       
-                  label: 'Full Analysis', 
-                  desc: 'All test results + interpretation' 
-                },
-                { 
-                  v: 'conclusion', 
-                  label: 'Conclusion',    
-                  desc: 'Key findings only' 
-                },
+                { v: 'full',       label: 'Full Analysis', desc: 'All test results + interpretation' },
+                { v: 'conclusion', label: 'Conclusion',    desc: 'Key findings only' },
               ].map(({ v, label, desc }) => (
                 <button
                   key={v}
@@ -123,12 +129,11 @@ export default function AnalyzePage() {
           disabled={loading || files.length === 0}>
           {loading
             ? <><span className="spinner" /> {progress}</>
-            : `⚡ Analyze Report${files.length > 1 
-            ? ` (${files.length} pages)` : ''}`
-          }
+            : `⚡ Analyze Report${files.length > 1 ? ` (${files.length} pages)` : ''}`}
         </button>
       </div>
 
+      {/* ── Inline result ── */}
       {result && (
         <div className="animate-fadeUp">
           <AnalysisResult

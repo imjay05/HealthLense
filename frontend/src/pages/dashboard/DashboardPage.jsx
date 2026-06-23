@@ -4,10 +4,16 @@ import api from '../../api/axios'
 import useAuthStore from '../../store/authStore'
 import './DashboardPage.css'
 
+const latestAnalysis = (report) => {
+  const entries = report?.analyses ?? []
+  if (!entries.length) return null
+  return [...entries].sort((a, b) => new Date(b.analyzedAt) - new Date(a.analyzedAt))[0]
+}
+
 export default function DashboardPage() {
   const { user } = useAuthStore()
   const navigate = useNavigate()
-  const [data, setData]     = useState(null)
+  const [data, setData]       = useState(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -18,16 +24,8 @@ export default function DashboardPage() {
   }, [])
 
   const stats = [
-    { 
-      label: 'Reports Analyzed', 
-      value: data?.recentReports?.length ?? '—', 
-      icon: '📄' 
-    },
-    { 
-      label: 'Symptom Queries',  
-      value: data?.recentQueries?.length  ?? '—', 
-      icon: '🩺' 
-    },
+    { label: 'Reports Analyzed', value: data?.recentReports?.length ?? '—', icon: '📄' },
+    { label: 'Symptom Queries',  value: data?.recentQueries?.length  ?? '—', icon: '🩺' },
   ]
 
   return (
@@ -56,6 +54,7 @@ export default function DashboardPage() {
       </div>
 
       <div className="dash-grid">
+        {/* Recent Reports */}
         <div className="card dash-recent animate-fadeUp delay-2">
           <div className="card-head">
             <h3 className="card-title">Recent Reports</h3>
@@ -63,30 +62,41 @@ export default function DashboardPage() {
           </div>
           {loading ? <SkeletonList /> : data?.recentReports?.length ? (
             <ul className="recent-list">
-              {data.recentReports.map((r) => (
-                <li key={r._id} className="recent-item" onClick={() => navigate('/history')}>
-                  <div className="recent-thumb">
-                    {r.thumbnailUrl
-                      ? <img src={r.thumbnailUrl} alt="" />
-                      : <span>{r.fileType === 'pdf' ? '📄' : '🖼'}</span>}
-                  </div>
-                  <div className="recent-info">
-                    <p className="recent-name">
-                      {r.fileType?.toUpperCase() ?? '?'} — {r.analysisType === 'full' ? 'Full Analysis' : 'Conclusion'}
-                    </p>
-                    <p className="recent-date">{fmtDate(r.createdAt)}</p>
-                  </div>
-                  <span className={`badge ${r.outputLang === 'hi' ? 'badge-blue' : r.outputLang === 'mr' ? 'badge-green' : 'badge-muted'}`}>
-                    {r.outputLang?.toUpperCase() ?? '—'}
-                  </span>
-                </li>
-              ))}
+              {data.recentReports.map((r) => {
+                const entry = latestAnalysis(r)
+                return (
+                  <li key={r._id} className="recent-item" onClick={() => navigate('/history')}>
+                    <div className="recent-thumb">
+                      {r.thumbnailUrl
+                        ? <img src={r.thumbnailUrl} alt="" />
+                        : <span>{r.fileType === 'pdf' ? '📄' : '🖼'}</span>}
+                    </div>
+                    <div className="recent-info">
+                      <p className="recent-name">
+                        {r.fileType?.toUpperCase() ?? '?'}
+                        {entry ? ` — ${entry.analysisType === 'full' ? 'Full Analysis' : 'Conclusion'}` : ''}
+                      </p>
+                      <p className="recent-date">{fmtDate(r.createdAt)}</p>
+                    </div>
+                    {entry?.outputLang && (
+                      <span className={`badge ${
+                        entry.outputLang === 'hi' ? 'badge-blue'
+                        : entry.outputLang === 'mr' ? 'badge-green'
+                        : 'badge-muted'
+                      }`}>
+                        {entry.outputLang.toUpperCase()}
+                      </span>
+                    )}
+                  </li>
+                )
+              })}
             </ul>
           ) : (
             <div className="dash-empty"><p>No reports yet.</p></div>
           )}
         </div>
 
+        {/* Recent Symptom Queries */}
         <div className="card dash-queries animate-fadeUp delay-3">
           <div className="card-head">
             <h3 className="card-title">Recent Symptom Queries</h3>
@@ -98,10 +108,16 @@ export default function DashboardPage() {
                 <li key={q._id} className="recent-item">
                   <div className="recent-pulse">⚡</div>
                   <div className="recent-info">
-                    <p className="recent-name">{q.inputText?.slice(0, 60)}{q.inputText?.length > 60 ? '…' : ''}</p>
-                    <p className="recent-date">{fmtDate(q.createdAt)} · {q.suggestions?.length || 0} suggestions</p>
+                    <p className="recent-name">
+                      {q.inputText?.slice(0, 60)}{q.inputText?.length > 60 ? '…' : ''}
+                    </p>
+                    <p className="recent-date">
+                      {fmtDate(q.createdAt)} · {q.suggestions?.length || 0} suggestions
+                    </p>
                   </div>
-                  <span className="badge badge-muted">{q.detectedLang ?? '—'}</span>
+                  {q.detectedLang && (
+                    <span className="badge badge-muted">{q.detectedLang}</span>
+                  )}
                 </li>
               ))}
             </ul>
@@ -117,12 +133,12 @@ export default function DashboardPage() {
 function SkeletonList() {
   return (
     <ul className="recent-list">
-      {[1,2,3].map(i => (
+      {[1, 2, 3].map(i => (
         <li key={i} className="recent-item">
-          <div className="skeleton" style={{ width:40, height:40, borderRadius:8 }} />
-          <div style={{ flex:1, display:'flex', flexDirection:'column', gap:6 }}>
-            <div className="skeleton" style={{ width:'60%', height:12 }} />
-            <div className="skeleton" style={{ width:'40%', height:10 }} />
+          <div className="skeleton" style={{ width: 40, height: 40, borderRadius: 8 }} />
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <div className="skeleton" style={{ width: '60%', height: 12 }} />
+            <div className="skeleton" style={{ width: '40%', height: 10 }} />
           </div>
         </li>
       ))}
@@ -138,4 +154,4 @@ const getTimeOfDay = () => {
 }
 
 const fmtDate = (d) =>
-  new Date(d).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' })
+  new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
