@@ -67,12 +67,10 @@
   user-select: none;
 }
 
-/* Hide inline user info — only in dropdown */
 .navbar-user-info { 
   display: none; 
 }
 
-/* Dropdown */
 .navbar-dropdown {
   position: absolute;
   top: calc(100% + 10px);

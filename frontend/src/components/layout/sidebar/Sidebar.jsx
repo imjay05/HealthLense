@@ -3,10 +3,26 @@ import useAuthStore from '../../../store/authStore'
 import './Sidebar.css'
 
 const NAV = [
-  { to: '/', label: 'Dashboard',  icon: GridIcon  },
-  { to: '/analyze', label: 'Analyze Report', icon: ScanIcon  },
-  { to: '/symptoms', label: 'Symptoms', icon: PulseIcon },
-  { to: '/history', label: 'History', icon: ClockIcon },
+  { 
+    to: '/', 
+    label: 'Dashboard',  
+    icon: GridIcon  
+  },
+  { 
+    to: '/analyze', 
+    label: 'Analyze Report', 
+    icon: ScanIcon  
+  },
+  { 
+    to: '/symptoms', 
+    label: 'Symptoms', 
+    icon: PulseIcon 
+  },
+  { 
+    to: '/history', 
+    label: 'History', 
+    icon: ClockIcon 
+  },
 ]
 
 export default function Sidebar() {
@@ -14,13 +30,11 @@ export default function Sidebar() {
 
   return (
     <aside className="sidebar">
-      {/* Logo */}
       <div className="sidebar-logo">
         <img src="/healthLense.png" alt="HealthLense" className="logo-img" />
         <span className="logo-text">Health<em>Lense</em></span>
       </div>
 
-      {/* Nav */}
       <nav className="sidebar-nav">
         {NAV.map(({ to, label, icon: Icon }) => (
           <NavLink
