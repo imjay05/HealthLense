@@ -12,11 +12,13 @@ const LANG_LABEL = { en: 'English', hi: 'Hindi', mr: 'Marathi' }
 const TYPE_LABEL = { full: 'Full Analysis', conclusion: 'Conclusion' }
 
 export default function ReportCard({ report, expanded, onExpand, onDelete }) {
-  const [fullReport, setFullReport]         = useState(null)
-  const [loadingFull, setLoadingFull]       = useState(false)
-  const [confirmDelete, setConfirmDelete]   = useState(false)
-  const [openEntryId, setOpenEntryId]       = useState(null)
-  const [deletingEntry, setDeletingEntry]   = useState(null)
+  const [fullReport, setFullReport]       = useState(null)
+  const [loadingFull, setLoadingFull]     = useState(false)
+  const [confirmDelete, setConfirmDelete] = useState(false)
+  const [openEntryId, setOpenEntryId]     = useState(null)
+  const [deletingEntry, setDeletingEntry] = useState(null)
+
+  if (!report || !report._id) return null
 
   const handleExpand = async () => {
     onExpand()
@@ -44,7 +46,6 @@ export default function ReportCard({ report, expanded, onExpand, onDelete }) {
         setFullReport(data.report)
         if (openEntryId === entryId) setOpenEntryId(null)
       } else {
-        // whole report deleted
         onDelete()
       }
     } catch { /* silently fail */ }
@@ -66,7 +67,7 @@ export default function ReportCard({ report, expanded, onExpand, onDelete }) {
 
         <div className="rc-meta">
           <div className="rc-top">
-            <span className="rc-type">{report.fileType?.toUpperCase()}</span>
+            <span className="rc-type">{report.fileType?.toUpperCase() ?? '—'}</span>
             <span className="rc-count">{analyses.length} analysis{analyses.length !== 1 ? 'es' : ''}</span>
           </div>
           <span className="rc-date">{fmtDate(report.createdAt)}</span>
@@ -114,7 +115,6 @@ export default function ReportCard({ report, expanded, onExpand, onDelete }) {
             <div className="rc-entries">
               {analyses.map((entry) => (
                 <div key={entry._id} className="rc-entry">
-                  {/* Entry Header */}
                   <div
                     className="rc-entry-header"
                     onClick={() => setOpenEntryId(openEntryId === entry._id ? null : entry._id)}>
@@ -144,7 +144,6 @@ export default function ReportCard({ report, expanded, onExpand, onDelete }) {
                     </div>
                   </div>
 
-                  {/* Entry Content */}
                   {openEntryId === entry._id && (
                     <div className="rc-entry-body animate-fadeIn">
                       {entry.analysisResult
@@ -181,6 +180,7 @@ function ChevronIcon({ up }) {
     </svg>
   )
 }
+
 function TrashIcon() {
   return (
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
