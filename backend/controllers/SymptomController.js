@@ -1,4 +1,4 @@
-const SymptomQuery = require("../models/SympotomQuery");
+const SymptomQuery = require("../models/SymptomQuery");
 const { analyzeSymptoms } = require("../services/AIService");
 const { getNearbyLabs } = require("../services/OverPassService");
 
