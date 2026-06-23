@@ -72,12 +72,12 @@ export default function DashboardPage() {
                   </div>
                   <div className="recent-info">
                     <p className="recent-name">
-                      {r.fileType.toUpperCase()} — {r.analysisType === 'full' ? 'Full Analysis' : 'Conclusion'}
+                      {r.fileType?.toUpperCase() ?? '?'} — {r.analysisType === 'full' ? 'Full Analysis' : 'Conclusion'}
                     </p>
                     <p className="recent-date">{fmtDate(r.createdAt)}</p>
                   </div>
                   <span className={`badge ${r.outputLang === 'hi' ? 'badge-blue' : r.outputLang === 'mr' ? 'badge-green' : 'badge-muted'}`}>
-                    {r.outputLang.toUpperCase()}
+                    {r.outputLang?.toUpperCase() ?? '—'}
                   </span>
                 </li>
               ))}
@@ -98,10 +98,10 @@ export default function DashboardPage() {
                 <li key={q._id} className="recent-item">
                   <div className="recent-pulse">⚡</div>
                   <div className="recent-info">
-                    <p className="recent-name">{q.inputText.slice(0, 60)}{q.inputText.length > 60 ? '…' : ''}</p>
+                    <p className="recent-name">{q.inputText?.slice(0, 60)}{q.inputText?.length > 60 ? '…' : ''}</p>
                     <p className="recent-date">{fmtDate(q.createdAt)} · {q.suggestions?.length || 0} suggestions</p>
                   </div>
-                  <span className="badge badge-muted">{q.detectedLang}</span>
+                  <span className="badge badge-muted">{q.detectedLang ?? '—'}</span>
                 </li>
               ))}
             </ul>
@@ -136,5 +136,6 @@ const getTimeOfDay = () => {
   if (h < 17) return 'afternoon'
   return 'evening'
 }
+
 const fmtDate = (d) =>
   new Date(d).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' })
