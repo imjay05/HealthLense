@@ -80,3 +80,58 @@
 .sidebar-link svg { 
   flex-shrink: 0; 
 }
+
+
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed; 
+    bottom: 0; 
+    left: 0; 
+    right: 0; 
+    top: auto;
+    width: 100%; 
+    height: 60px;
+    flex-direction: row; 
+    align-items: center;
+    border-right: none; 
+    border-top: 1px solid var(--border);
+    box-shadow: 0 -4px 16px rgba(0,0,0,.1);
+    z-index: 100; padding: 0;
+  }
+  .sidebar-logo { 
+    display: none; 
+  }
+  .sidebar-nav { 
+    flex-direction: row; 
+    padding: 0; 
+    gap: 0; 
+    flex: 1; 
+    height: 100%; 
+  }
+  .sidebar-link { 
+    flex: 1; 
+    flex-direction: column; 
+    gap: 3px; 
+    padding: 6px 4px; 
+    font-size: .62rem; 
+    border-radius: 0; 
+    justify-content: center; 
+    height: 100%; 
+    color: #7a9bb8; 
+  }
+  .sidebar-link span { 
+    display: block; 
+    line-height: 1; 
+  }
+  .sidebar-link svg { 
+    width: 20px; 
+    height: 20px; 
+  }
+  .sidebar-link.active { 
+    background: transparent; 
+    color: var(--accent); 
+  }
+  .sidebar-link.active svg { 
+    stroke: var(--accent); 
+  }
+}

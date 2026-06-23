@@ -132,3 +132,13 @@
 .navbar-dropdown-btn:hover { 
   background: #fff5f5; 
 }
+
+@media (max-width: 768px) {
+  .navbar { 
+    padding: 0 16px; 
+    height: 52px; 
+  }
+  .navbar-sub { 
+    display: none; 
+  }
+}
