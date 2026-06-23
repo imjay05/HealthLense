@@ -19,10 +19,12 @@ const upload = multer({
   },
 });
 
+router.use(protect); 
+
 router.post("/analyze", rateLimiter(), upload.array("files", 5), analyze);
 router.get("/", getReports);
 router.get("/:id", getReport);
 router.delete("/:id", deleteReport);
-router.delete("/:id/analyses/:entryId", protect, deleteAnalysisEntry);
+router.delete("/:id/analyses/:entryId", deleteAnalysisEntry);
 
 module.exports = router;
