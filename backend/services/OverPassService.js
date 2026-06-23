@@ -19,16 +19,16 @@ const getNearbyLabs = async (lat, lon, radiusKm = 10, maxResults = 8) => {
     for (const term of searchTerms) {
       try {
         const url = new URL("https://nominatim.openstreetmap.org/search");
-        url.searchParams.set("q",             term);
-        url.searchParams.set("format",        "json");
-        url.searchParams.set("limit",         "10");
+        url.searchParams.set("q", term);
+        url.searchParams.set("format",  "json");
+        url.searchParams.set("limit", "10");
         url.searchParams.set("addressdetails","1");
-        url.searchParams.set("viewbox",       viewbox);
-        url.searchParams.set("bounded",       "1");
+        url.searchParams.set("viewbox",  viewbox);
+        url.searchParams.set("bounded", "1");
 
         const response = await fetch(url.toString(), {
           headers: {
-            "User-Agent":      "HealthLense/1.0 (healthlense@dev.local)",
+            "User-Agent": "HealthLense/1.0 (healthlense@dev.local)",
             "Accept-Language": "en",
           },
           signal: AbortSignal.timeout(8000),

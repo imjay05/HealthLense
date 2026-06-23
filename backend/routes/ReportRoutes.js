@@ -3,7 +3,7 @@ const router = express.Router();
 const multer = require("multer");
 const { protect } = require("../middleware/AuthMiddleware");
 const { rateLimiter } = require("../middleware/RateLimiter");
-const {analyze, getReports, getReport, deleteReport } = require("../controllers/ReportController");
+const {analyze, getReports, getReport, deleteReport, deleteAnalysisEntry } = require("../controllers/ReportController");
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -19,11 +19,10 @@ const upload = multer({
   },
 });
 
-router.use(protect);
-
 router.post("/analyze", rateLimiter(), upload.array("files", 5), analyze);
 router.get("/", getReports);
 router.get("/:id", getReport);
 router.delete("/:id", deleteReport);
+router.delete("/:id/analyses/:entryId", protect, deleteAnalysisEntry);
 
 module.exports = router;

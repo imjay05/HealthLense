@@ -32,12 +32,9 @@ const start = async () => {
 
   httpServer.listen(PORT, () => {
     console.log(`
-🚀 HealthLense Server running
+   HealthLense Server running
    ├─ HTTP  → http://localhost:${PORT}
-   ├─ WS    → ws://localhost:${PORT}
    ├─ DB    → MongoDB Atlas
-   ├─ CORS  → ${ALLOWED_ORIGINS.join(", ") || "⚠️  NO ORIGINS SET"}
-   └─ Health → http://localhost:${PORT}/health
     `);
   });
 };

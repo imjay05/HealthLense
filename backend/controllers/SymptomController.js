@@ -13,9 +13,7 @@ const analyze = async (req, res) => {
   try {
     const grokResult = await analyzeSymptoms(inputText, selectedChips);
 
-    const suggestions = (grokResult.suggestions || [])
-      .slice(0, 7)
-      .map(({ testName, reason }) => ({ testName, reason }));
+    const suggestions = (grokResult.suggestions || []).slice(0, 7).map(({ testName, reason }) => ({ testName, reason }));
 
     let nearbyLabs = [];
     if (lat && lon) {

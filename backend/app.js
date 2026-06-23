@@ -19,7 +19,7 @@ const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || "")
 
 // Warn at startup — catches misconfigured deployments early
 if (ALLOWED_ORIGINS.length === 0) {
-  console.warn("⚠️  WARNING: ALLOWED_ORIGINS is not set. All browser requests will be CORS-blocked.");
+  console.warn("WARNING: ALLOWED_ORIGINS is not set. All browser requests will be CORS-blocked.");
 }
 
 // Middleware 
@@ -50,11 +50,7 @@ app.use("/api/history", historyRoutes);
 
 // 404 handler 
 app.use((req, res) => {
-  res
-     .status(404)
-     .json({ 
-        message: `Route ${req.method} ${req.path} not found` 
-    });
+  res.status(404).json({ message: `Route ${req.method} ${req.path} not found`});
 });
 
 // Global error handler 
@@ -63,31 +59,21 @@ app.use((err, req, res, next) => {
 
   // Multer errors
   if (err.code === "LIMIT_FILE_SIZE") {
-    return res
-              .status(400)
-              .json({ 
-                message: "File too large. Max 10MB allowed." 
-            });
+    return res.status(400).json({ message: "File too large. Max 10MB allowed." });
   }
   if (err.message?.includes("Only JPG")) {
-    return res
-             .status(400)
-             .json({ message: err.message });
+    return res.status(400).json({ message: err.message });
   }
 
   // Mongoose validation
   if (err.name === "ValidationError") {
     const messages = Object.values(err.errors).map((e) => e.message);
-    return res
-              .status(400)
-              .json({ message: messages.join(", ") });
+    return res.status(400).json({ message: messages.join(", ") });
   }
 
   // JWT errors
   if (err.name === "JsonWebTokenError") {
-    return res
-              .status(401)
-              .json({ message: "Invalid token" });
+    return res.status(401).json({ message: "Invalid token" });
   }
 
   res.status(err.status || 500).json({

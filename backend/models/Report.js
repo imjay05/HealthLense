@@ -1,5 +1,26 @@
 const mongoose = require("mongoose");
 
+const AnalysisEntrySchema = new mongoose.Schema({
+  analysisType: { 
+    type: String, 
+    enum: ["full", "conclusion"], 
+    required: true 
+  },
+  outputLang: { 
+    type: String, 
+    enum: ["en", "hi", "mr"],     
+    required: true 
+  },
+  analysisResult: { 
+    type: String, 
+    required: true 
+  },
+  analyzedAt:{ 
+    type: Date, 
+    default: Date.now 
+  },
+});
+
 const reportSchema = new mongoose.Schema(
   {
     user: {
@@ -23,26 +44,29 @@ const reportSchema = new mongoose.Schema(
     thumbnailUrl: { 
       type: String 
     },
-    analysisType: { 
+    fileDate: {
       type: String, 
-      enum: ["full", "conclusion"], 
       required: true 
-    },
-    outputLang: { 
-      type: String, 
-      enum: ["en", "hi", "mr"], 
-      default: "en" 
-    },
-    analysisResult: { 
-      type: String 
-    },
-    reportDate: { 
-      type: Date, 
-      default: Date.now 
-    },
+    }, 
+    additionalFiles: [
+      {
+        fileUrl:      String,
+        filePublicId: String,
+        fileType:     String,
+        thumbnailUrl: String,
+      },
+    ],
+    analyses: [AnalysisEntrySchema], 
   },
   { timestamps: true }
 );
 
+ReportSchema.index({ 
+  user: 1, 
+  filePublicId: 1, 
+  fileDate: 1 
+}, { 
+  unique: true 
+});
 
-module.exports = mongoose.model("Report", reportSchema);
+module.exports = mongoose.model("Report", ReportSchema);

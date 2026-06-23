@@ -48,7 +48,6 @@ const rateLimiter = (options = {}) => {
         return next();
       }
 
-      // Filter out timestamps outside the current window
       const validRequests = (doc.requests || []).filter((ts) => ts > windowStart);
 
       if (validRequests.length >= max) {
