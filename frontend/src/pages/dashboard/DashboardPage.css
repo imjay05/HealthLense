@@ -27,11 +27,11 @@
   gap: 7px; 
   position: relative; 
   overflow: hidden; 
-  background: linear-gradient(135deg, rgba(137, 192, 185, 0.07), rgba(104, 152, 203, 0.05))  !important;
-  border: 1px solid rgba(13,184,160,0.2) !important;
+  background: #ffffff; 
+  border: 1px solid rgba(13,184,160,0.25); 
   border-radius: 16px; 
   padding: 24px; 
-  box-shadow: 0 4px 16px rgba(0,0,0,.08); 
+  box-shadow: 0 0 0 1px rgba(13,184,160,0.1), inset 0 0 20px rgba(45,125,210,0.06); 
 }
 
 .dash-stat::after { 
@@ -61,8 +61,9 @@
 
 .dash-recent,
 .dash-queries {
-  background: linear-gradient(135deg, rgba(45,125,210,0.06), rgba(13,184,160,0.04));
-  border: 1px solid rgba(45,125,210,0.18);
+  background: #ffffff;
+  border: 1px solid rgba(45,125,210,0.2);
+  box-shadow: 0 0 0 1px rgba(45,125,210,0.08), inset 0 0 20px rgba(13,184,160,0.05);
 }
 
 @media (max-width: 768px) {
@@ -84,10 +85,11 @@
   display: flex;
   align-items: center;
   gap: 16px;
-  background: linear-gradient(135deg, rgba(13,184,160,0.1), rgba(45,125,210,0.07));
-  border: 1px solid rgba(13,184,160,0.28);
+  background: #ffffff;
+  border: 1px solid rgba(13,184,160,0.25);
   border-radius: 16px;
   padding: 20px 24px;
+  box-shadow: 0 0 0 1px rgba(13,184,160,0.1), inset 0 0 20px rgba(45,125,210,0.06);
 }
 
 .tip-left {
