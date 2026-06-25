@@ -65,7 +65,7 @@ export default function DashboardPage() {
               {data.recentReports.map((r) => {
                 const entry = latestAnalysis(r)
                 return (
-                  <li key={r._id} className="recent-item" onClick={() => navigate('/history')}>
+                  <li key={r._virtualId || r._id} className="recent-item" onClick={() => navigate('/history')}>
                     <div className="recent-thumb">
                       {r.thumbnailUrl
                         ? <img src={r.thumbnailUrl} alt="" />
@@ -76,7 +76,7 @@ export default function DashboardPage() {
                         {r.fileType?.toUpperCase() ?? '?'}
                         {entry ? ` — ${entry.analysisType === 'full' ? 'Full Analysis' : 'Conclusion'}` : ''}
                       </p>
-                      <p className="recent-date">{fmtDate(r.createdAt)}</p>
+                      <p className="recent-date">{fmtDate(r.displayDate || r.createdAt)}</p>
                     </div>
                     {entry?.outputLang && (
                       <span className={`badge ${
@@ -153,5 +153,4 @@ const getTimeOfDay = () => {
   return 'evening'
 }
 
-const fmtDate = (d) =>
-  new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+const fmtDate = (d) => new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
