@@ -27,7 +27,7 @@
   gap: 7px; 
   position: relative; 
   overflow: hidden; 
-  background: linear-gradient(135deg, rgba(13,184,160,0.07), rgba(45,125,210,0.05))  !important;
+  background: linear-gradient(135deg, rgba(137, 192, 185, 0.07), rgba(104, 152, 203, 0.05))  !important;
   border: 1px solid rgba(13,184,160,0.2) !important;
   border-radius: 16px; 
   padding: 24px; 
