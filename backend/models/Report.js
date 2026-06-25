@@ -1,23 +1,23 @@
 const mongoose = require("mongoose");
 
 const AnalysisEntrySchema = new mongoose.Schema({
-  analysisType: { 
-    type: String, 
-    enum: ["full", "conclusion"], 
-    required: true 
+  analysisType: {
+    type: String,
+    enum: ["full", "conclusion"],
+    required: true
   },
-  outputLang: { 
-    type: String, 
-    enum: ["en", "hi", "mr"],     
-    required: true 
+  outputLang: {
+    type: String,
+    enum: ["en", "hi", "mr"],
+    required: true
   },
-  analysisResult: { 
-    type: String, 
-    required: true 
+  analysisResult: {
+    type: String,
+    required: true
   },
-  analyzedAt:{ 
-    type: Date, 
-    default: Date.now 
+  analyzedAt: {
+    type: Date,
+    default: Date.now
   },
 });
 
@@ -29,25 +29,24 @@ const reportSchema = new mongoose.Schema(
       required: true,
       index: true,
     },
-    fileUrl: { 
-      type: String, 
-      required: true 
+    fileUrl: {
+      type: String,
+      required: true
     },
-    filePublicId: { 
-      type: String 
+    filePublicId: {
+      type: String
     },
-    fileType: { 
-      type: String, 
-      enum: ["pdf", "image", "word"], 
-      required: true 
+    fileType: {
+      type: String,
+      enum: ["pdf", "image", "word"],
+      required: true
     },
-    thumbnailUrl: { 
-      type: String 
+    thumbnailUrl: {
+      type: String
     },
     fileDate: {
-      type: String, 
-      required: true 
-    }, 
+      type: String,
+    },
     additionalFiles: [
       {
         fileUrl:      String,
@@ -56,17 +55,15 @@ const reportSchema = new mongoose.Schema(
         thumbnailUrl: String,
       },
     ],
-    analyses: [AnalysisEntrySchema], 
+    analyses: [AnalysisEntrySchema],
   },
   { timestamps: true }
 );
 
-reportSchema.index({ 
-  user: 1, 
-  filePublicId: 1, 
-  fileDate: 1 
-}, { 
-  unique: true 
-});
+
+reportSchema.index(
+  { user: 1, filePublicId: 1 },
+  { unique: true }
+);
 
 module.exports = mongoose.model("Report", reportSchema);
