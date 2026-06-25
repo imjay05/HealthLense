@@ -43,7 +43,7 @@ export default function DashboardPage() {
 
       <div className="dash-stats">
         {stats.map((s, i) => (
-          <div key={s.label} className={`card dash-stat animate-fadeUp delay-${i + 1}`}>
+          <div key={s.label} className={`dash-stat animate-fadeUp delay-${i + 1}`}>
             <div className="stat-icon">{s.icon}</div>
             <div className="stat-value">
               {loading
@@ -56,7 +56,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Daily Health Tip */}
-      <div className="card dash-tip animate-fadeUp delay-1">
+      <div className="dash-tip animate-fadeUp delay-1">
         <div className="tip-left">
           <span className="tip-icon">{dailyTip.icon}</span>
         </div>
@@ -70,7 +70,8 @@ export default function DashboardPage() {
       </div>
 
       <div className="dash-grid">
-        <div className="card dash-recent animate-fadeUp delay-2">
+        {/* Recent Reports */}
+        <div className="dash-recent animate-fadeUp delay-2">
           <div className="card-head">
             <h3 className="card-title">Recent Reports</h3>
             <button className="text-link" onClick={() => navigate('/history')}>View all</button>
@@ -111,7 +112,8 @@ export default function DashboardPage() {
           )}
         </div>
 
-        <div className="card dash-queries animate-fadeUp delay-3">
+        {/* Recent Symptom Queries */}
+        <div className="dash-queries animate-fadeUp delay-3">
           <div className="card-head">
             <h3 className="card-title">Recent Symptom Queries</h3>
             <button className="text-link" onClick={() => navigate('/history')}>View all</button>
