@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import api from '../../api/axios'
 import useAuthStore from '../../store/authStore'
+import { getDailyTip } from '../../utils/healthTips'
 import './DashboardPage.css'
 
 const latestAnalysis = (report) => {
@@ -15,6 +16,7 @@ export default function DashboardPage() {
   const navigate = useNavigate()
   const [data, setData]       = useState(null)
   const [loading, setLoading] = useState(true)
+  const dailyTip              = getDailyTip()
 
   useEffect(() => {
     api.get('/history/dashboard')
@@ -53,8 +55,21 @@ export default function DashboardPage() {
         ))}
       </div>
 
+      {/* Daily Health Tip */}
+      <div className="card dash-tip animate-fadeUp delay-1">
+        <div className="tip-left">
+          <span className="tip-icon">{dailyTip.icon}</span>
+        </div>
+        <div className="tip-content">
+          <div className="tip-header">
+            <span className="tip-label">💡 Daily Health Tip</span>
+            <span className="tip-category">{dailyTip.category}</span>
+          </div>
+          <p className="tip-text">{dailyTip.tip}</p>
+        </div>
+      </div>
+
       <div className="dash-grid">
-        {/* Recent Reports */}
         <div className="card dash-recent animate-fadeUp delay-2">
           <div className="card-head">
             <h3 className="card-title">Recent Reports</h3>
@@ -96,7 +111,6 @@ export default function DashboardPage() {
           )}
         </div>
 
-        {/* Recent Symptom Queries */}
         <div className="card dash-queries animate-fadeUp delay-3">
           <div className="card-head">
             <h3 className="card-title">Recent Symptom Queries</h3>
@@ -153,4 +167,5 @@ const getTimeOfDay = () => {
   return 'evening'
 }
 
-const fmtDate = (d) => new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+const fmtDate = (d) =>
+  new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })

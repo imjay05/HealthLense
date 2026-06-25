@@ -73,3 +73,71 @@
     font-size: 1.35rem; 
   }
 }
+
+.dash-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  background: linear-gradient(135deg, rgba(13,184,160,0.08), rgba(45,125,210,0.08));
+  border: 1px solid rgba(13,184,160,0.25);
+  border-radius: 16px;
+  padding: 20px 24px;
+}
+
+.tip-left {
+  flex-shrink: 0;
+}
+
+.tip-icon {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.tip-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.tip-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tip-label {
+  font-size: .78rem;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.tip-category {
+  font-size: .72rem;
+  color: var(--text-muted);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  padding: 2px 10px;
+}
+
+.tip-text {
+  font-size: .88rem;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  margin: 0;
+}
+
+@media (max-width: 500px) {
+  .dash-tip {
+    padding: 16px;
+    gap: 12px;
+  }
+  .tip-icon {
+    font-size: 1.6rem;
+  }
+}
