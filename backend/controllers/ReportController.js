@@ -1,6 +1,8 @@
+const crypto = require("crypto");
 const Report = require("../models/Report");
 const { uploadBuffer, deleteFile, getThumbnailUrl, isWordMime } = require("../services/CloudinaryService");
 const { analyzeReport } = require("../services/AIService");
+
 
 const getFileType = (mimetype) => {
   if (mimetype === "application/pdf") return "pdf";
@@ -8,55 +10,77 @@ const getFileType = (mimetype) => {
   return "image";
 };
 
-
 const getISTDateString = () => {
   return new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" });
 };
 
 
+const getFileHash = (buffer) => {
+  return crypto.createHash("sha256").update(buffer).digest("hex");
+};
+
+
 const analyze = async (req, res) => {
   try {
-    if (!req.file && (!req.files || req.files.length === 0))
+    if (!req.file && (!req.files || req.files.length === 0)){
       return res.status(400).json({ message: "No file uploaded" });
+    }
 
     const { analysisType = "full", outputLang = "en" } = req.body;
 
-    if (!["full", "conclusion"].includes(analysisType))
+    if (!["full", "conclusion"].includes(analysisType)){
       return res.status(400).json({ message: "analysisType must be 'full' or 'conclusion'" });
+    }
 
-    if (!["en", "hi", "mr"].includes(outputLang))
+    if (!["en", "hi", "mr"].includes(outputLang)){
       return res.status(400).json({ message: "outputLang must be 'en', 'hi', or 'mr'" });
+    }
 
     const files = req.files?.length ? req.files : [req.file];
-    if (files.length > 5)
+    if (files.length > 5){
       return res.status(400).json({ message: "Maximum 5 files allowed per analysis" });
+    }
 
-    // Upload all files to Cloudinary
-    const uploadedFiles = await Promise.all(
-      files.map(async (file) => {
-        const fileType     = getFileType(file.mimetype);
-        const resourceType = fileType === "word" ? "raw" : "image";
-        const result       = await uploadBuffer(file.buffer, "healthlense/reports", resourceType);
-        return {
-          fileUrl:      result.secure_url,
-          filePublicId: result.public_id,
-          fileType,
-          resourceType,
-          pages:        result.pages || 1,
-          thumbnailUrl: getThumbnailUrl(result.public_id, resourceType),
-        };
-      })
-    );
+    const fileHash = getFileHash(files[0].buffer);
+
+    const existing = await Report.findOne({
+      user:     req.user._id,
+      fileHash: fileHash,
+    });
+
+    let uploadedFiles;
+    if (existing) {
+      uploadedFiles = [
+        {
+          fileUrl:      existing.fileUrl,
+          filePublicId: existing.filePublicId,
+          fileType:     existing.fileType,
+          resourceType: existing.fileType === "word" ? "raw" : "image",
+          pages:        1,
+          thumbnailUrl: existing.thumbnailUrl,
+        },
+      ];
+    } else {
+      uploadedFiles = await Promise.all(
+        files.map(async (file) => {
+          const fileType     = getFileType(file.mimetype);
+          const resourceType = fileType === "word" ? "raw" : "image";
+          const result       = await uploadBuffer(file.buffer, "healthlense/reports", resourceType);
+          return {
+            fileUrl:      result.secure_url,
+            filePublicId: result.public_id,
+            fileType,
+            resourceType,
+            pages:        result.pages || 1,
+            thumbnailUrl: getThumbnailUrl(result.public_id, resourceType),
+          };
+        })
+      );
+    }
 
     const primaryFile = uploadedFiles[0];
     const fileUrls    = uploadedFiles.map((f) => f.fileUrl);
     const todayIST    = getISTDateString();
-
-    // Check if this PDF was EVER analyzed by this user (no date restriction)
-    const existing = await Report.findOne({
-      user:         req.user._id,
-      filePublicId: primaryFile.filePublicId,
-    });
 
     const analysisResult = await analyzeReport(
       fileUrls,
@@ -64,7 +88,7 @@ const analyze = async (req, res) => {
       analysisType,
       outputLang,
       primaryFile.filePublicId,
-      primaryFile.pages
+      primaryFile.pages || 1
     );
 
     const newEntry = { analysisType, outputLang, analysisResult, analyzedAt: new Date() };
@@ -72,26 +96,25 @@ const analyze = async (req, res) => {
     let report;
 
     if (existing) {
-      // Same PDF — just push new analysis entry, never duplicate the doc
       existing.analyses.push(newEntry);
       report = await existing.save();
     } else {
-      // First time this PDF is analyzed — create fresh document
       report = await Report.create({
         user:         req.user._id,
         fileUrl:      primaryFile.fileUrl,
         filePublicId: primaryFile.filePublicId,
+        fileHash:     fileHash,
         fileType:     primaryFile.fileType,
         thumbnailUrl: primaryFile.thumbnailUrl,
         fileDate:     todayIST,
         additionalFiles: uploadedFiles.slice(1).map((f) => ({
-          fileUrl:      f.fileUrl,
-          filePublicId: f.filePublicId,
-          fileType:     f.fileType,
-          thumbnailUrl: f.thumbnailUrl,
-        })),
-        analyses: [newEntry],
-      });
+                                                              fileUrl: f.fileUrl,
+                                                              filePublicId: f.filePublicId,
+                                                              fileType: f.fileType,
+                                                              thumbnailUrl: f.thumbnailUrl,
+                                                            })),
+                                                            analyses: [newEntry],
+                                                          });
     }
 
     res.status(201).json({ report });
@@ -147,18 +170,22 @@ const deleteReport = async (req, res) => {
   }
 };
 
+
 const deleteAnalysisEntry = async (req, res) => {
   try {
     const { id, entryId } = req.params;
     const report = await Report.findOne({ _id: id, user: req.user._id });
-    if (!report) return res.status(404).json({ message: "Report not found" });
+    if (!report){
+      return res.status(404).json({ message: "Report not found" });
+    }
 
     const before = report.analyses.length;
     report.analyses = report.analyses.filter((a) => a._id.toString() !== entryId);
 
-    if (report.analyses.length === before)
+    if (report.analyses.length === before){
       return res.status(404).json({ message: "Analysis entry not found" });
-
+    }
+    
     if (report.analyses.length === 0) {
       const toResourceType = (ft) => ft === "word" ? "raw" : "image";
       await deleteFile(report.filePublicId, toResourceType(report.fileType));
@@ -178,5 +205,6 @@ const deleteAnalysisEntry = async (req, res) => {
     res.status(500).json({ message: "Failed to delete analysis entry" });
   }
 };
+
 
 module.exports = { analyze, getReports, getReport, deleteReport, deleteAnalysisEntry };

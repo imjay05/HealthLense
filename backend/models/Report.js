@@ -21,6 +21,7 @@ const AnalysisEntrySchema = new mongoose.Schema({
   },
 });
 
+
 const reportSchema = new mongoose.Schema(
   {
     user: {
@@ -35,6 +36,10 @@ const reportSchema = new mongoose.Schema(
     },
     filePublicId: {
       type: String
+    },
+    fileHash: {
+      type: String,
+      index: true,
     },
     fileType: {
       type: String,
@@ -62,8 +67,15 @@ const reportSchema = new mongoose.Schema(
 
 
 reportSchema.index(
-  { user: 1, filePublicId: 1 },
-  { unique: true }
+  { 
+    user: 1, 
+    fileHash: 1 
+  },
+  { 
+    unique: true, 
+    sparse: true 
+  }
 );
+
 
 module.exports = mongoose.model("Report", reportSchema);
