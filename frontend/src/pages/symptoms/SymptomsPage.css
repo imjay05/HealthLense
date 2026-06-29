@@ -62,6 +62,7 @@
     grid-template-areas: "left" "right" "map"; 
   }
 }
+
 @media (max-width: 600px) {
   .symptoms-page { 
     gap: 16px; 
