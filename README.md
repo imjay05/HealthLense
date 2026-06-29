@@ -118,18 +118,18 @@ This isn't a CRUD demo — it's a system that had to solve real engineering prob
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                        CLIENT (React + Vite)                    │
-│  AuthPages · AnalyzePage · SymptomsPage · HistoryPage            │
-│       Axios + JWT Interceptor          Socket.IO Client          │
+│  AuthPages · AnalyzePage · SymptomsPage · HistoryPage           │
+│       Axios + JWT Interceptor          Socket.IO Client         │
 └──────────────────────────────┬──────────────────────────────────┘
                                │ HTTPS / WebSocket
 ┌──────────────────────────────▼──────────────────────────────────┐
 │                  SERVER (Express + Socket.IO)                   │
-│   AuthMiddleware (JWT) · RateLimiter (Mongo TTL) · Multer        │
-│              /auth   /reports   /symptoms   /history             │
+│   AuthMiddleware (JWT) · RateLimiter (Mongo TTL) · Multer       │
+│              /auth   /reports   /symptoms   /history            │
 │     AIService (Groq)   CloudinaryService   OverpassService      │
-│                       MongoDB Atlas                              │
+│                       MongoDB Atlas                             │
 │         Users · Reports · SymptomQueries · RateLimits           │
-│                    Email (Resend)                                │
+│                    Email (Resend)                               │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
