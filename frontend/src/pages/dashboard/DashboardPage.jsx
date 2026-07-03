@@ -43,6 +43,7 @@ export default function DashboardPage() {
           <h2 className="dash-greeting">
             Good {getTimeOfDay()}, <span>{user?.name?.split(' ')[0]}</span>
           </h2>
+          <p className="dash-tagline">Here's your health intelligence overview.</p>
         </div>
       </div>
 
