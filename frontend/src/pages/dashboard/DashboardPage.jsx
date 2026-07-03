@@ -26,8 +26,16 @@ export default function DashboardPage() {
   }, [])
 
   const stats = [
-    { label: 'Reports Analyzed', value: data?.recentReports?.length ?? '—', icon: '📄' },
-    { label: 'Symptom Queries',  value: data?.recentQueries?.length  ?? '—', icon: '🩺' },
+    { 
+      label: 'Reports Analyzed', 
+      value: data?.recentReports?.length ?? '—', 
+      icon: '📄' 
+    },
+    { 
+      label: 'Symptom Queries',  
+      value: data?.recentQueries?.length  ?? '—', 
+      icon: '🩺' 
+    },
   ]
 
   return (
@@ -37,6 +45,7 @@ export default function DashboardPage() {
           <h2 className="dash-greeting">
             Good {getTimeOfDay()}, <span>{user?.name?.split(' ')[0]}</span>
           </h2>
+          <p className="dash-daily-tip">{dailyTip.icon} {dailyTip.tip}</p>
           <p className="dash-tagline">Here's your health intelligence overview.</p>
         </div>
       </div>
@@ -53,20 +62,6 @@ export default function DashboardPage() {
             <div className="stat-label">{s.label}</div>
           </div>
         ))}
-      </div>
-
-      {/* Daily Health Tip */}
-      <div className="dash-tip animate-fadeUp delay-1">
-        <div className="tip-left">
-          <span className="tip-icon">{dailyTip.icon}</span>
-        </div>
-        <div className="tip-content">
-          <div className="tip-header">
-            <span className="tip-label">💡 Daily Health Tip</span>
-            <span className="tip-category">{dailyTip.category}</span>
-          </div>
-          <p className="tip-text">{dailyTip.tip}</p>
-        </div>
       </div>
 
       <div className="dash-grid">
@@ -169,5 +164,4 @@ const getTimeOfDay = () => {
   return 'evening'
 }
 
-const fmtDate = (d) =>
-  new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+const fmtDate = (d) => new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
