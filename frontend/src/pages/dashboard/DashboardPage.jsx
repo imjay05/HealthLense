@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import api from '../../api/axios'
 import useAuthStore from '../../store/authStore'
-import { getDailyTip } from '../../utils/healthTips'
 import './DashboardPage.css'
 
 const latestAnalysis = (report) => {
@@ -14,9 +13,8 @@ const latestAnalysis = (report) => {
 export default function DashboardPage() {
   const { user } = useAuthStore()
   const navigate = useNavigate()
-  const [data, setData]       = useState(null)
+  const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
-  const dailyTip              = getDailyTip()
 
   useEffect(() => {
     api.get('/history/dashboard')
@@ -40,16 +38,6 @@ export default function DashboardPage() {
 
   return (
     <div className="dashboard">
-      <div className="dash-welcome animate-fadeUp">
-        <div>
-          <h2 className="dash-greeting">
-            Good {getTimeOfDay()}, <span>{user?.name?.split(' ')[0]}</span>
-          </h2>
-          <p className="dash-daily-tip">{dailyTip.icon} {dailyTip.tip}</p>
-          <p className="dash-tagline">Here's your health intelligence overview.</p>
-        </div>
-      </div>
-
       <div className="dash-stats">
         {stats.map((s, i) => (
           <div key={s.label} className={`dash-stat animate-fadeUp delay-${i + 1}`}>
