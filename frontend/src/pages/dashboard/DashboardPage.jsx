@@ -38,6 +38,14 @@ export default function DashboardPage() {
 
   return (
     <div className="dashboard">
+      <div className="dash-welcome animate-fadeUp">
+        <div>
+          <h2 className="dash-greeting">
+            Good {getTimeOfDay()}, <span>{user?.name?.split(' ')[0]}</span>
+          </h2>
+        </div>
+      </div>
+
       <div className="dash-stats">
         {stats.map((s, i) => (
           <div key={s.label} className={`dash-stat animate-fadeUp delay-${i + 1}`}>
