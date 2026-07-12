@@ -18,7 +18,6 @@ export const useGeolocation = () => {
         setLoading(false)
       },
       (err) => {
-        // User-friendly messages instead of raw browser errors
         const messages = {
           1: 'Location permission denied. Please allow access.',
           2: 'Location unavailable. Try again.',
