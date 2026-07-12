@@ -8,8 +8,8 @@
   border-bottom: 1px solid  #021829;
   flex-shrink: 0;
   box-shadow:
-    0 10px 20px rgba(37, 99, 235, 0.18),   /* bottom */
-    0 -10px 20px rgba(37, 99, 235, 0.10);  /* top */
+    0 10px 20px rgba(37, 99, 235, 0.18),   
+    0 -10px 20px rgba(37, 99, 235, 0.10);  
 }
 
 .navbar-left { 

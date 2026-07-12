@@ -2,7 +2,6 @@ const jwt = require("jsonwebtoken");
 const { getNearbyLabs } = require("../services/OverPassService");
 
 const setupSocket = (io) => {
-  // Authenticate socket connections via JWT
   io.use((socket, next) => {
     const token = socket.handshake.auth?.token;
     if (!token){
@@ -21,7 +20,6 @@ const setupSocket = (io) => {
   io.on("connection", (socket) => {
     console.log(`🔌 Socket connected: user ${socket.userId}`);
 
-    // Client sends coordinates, server streams nearby labs back
     socket.on("find:labs", async ({ lat, lon, radiusKm = 10 }) => {
       if (!lat || !lon) {
         return socket.emit("labs:error", { message: "Coordinates required" });

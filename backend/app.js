@@ -17,7 +17,6 @@ const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || "")
   .map(o => o.trim())
   .filter(Boolean);
 
-// Warn at startup — catches misconfigured deployments early
 if (ALLOWED_ORIGINS.length === 0) {
   console.warn("WARNING: ALLOWED_ORIGINS is not set. All browser requests will be CORS-blocked.");
 }

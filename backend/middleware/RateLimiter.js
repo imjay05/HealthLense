@@ -37,11 +37,9 @@ const rateLimiter = (options = {}) => {
       const now = Date.now();
       const windowStart = now - windowMs;
 
-      // Find or create rate limit doc
       let doc = await RateLimit.findOne({ key });
 
       if (!doc) {
-        // First request — create doc
         doc = await RateLimit.create({ key, requests: [now], updatedAt: new Date() });
         res.setHeader("X-RateLimit-Limit", max);
         res.setHeader("X-RateLimit-Remaining", max - 1);
@@ -51,13 +49,11 @@ const rateLimiter = (options = {}) => {
       const validRequests = (doc.requests || []).filter((ts) => ts > windowStart);
 
       if (validRequests.length >= max) {
-        // Find oldest request in window to compute retry-after
         const oldest = Math.min(...validRequests);
         const retryAfter = Math.ceil((oldest + windowMs - now) / 1000);
         return res.status(429).json({ message, retryAfter });
       }
 
-      // Add current request and save
       validRequests.push(now);
       await RateLimit.findOneAndUpdate(
         { key },
@@ -69,7 +65,6 @@ const rateLimiter = (options = {}) => {
       res.setHeader("X-RateLimit-Remaining", max - validRequests.length);
       next();
     } catch (err) {
-      // Fail open — don't block requests if DB has issues
       console.warn("Rate limiter error, skipping:", err.message);
       next();
     }
