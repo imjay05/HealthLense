@@ -7,10 +7,7 @@ const { setupSocket } = require("./socket/SocketHandler");
 
 const PORT = process.env.PORT || 5000;
 
-const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || "")
-  .split(",")
-  .map(o => o.trim())
-  .filter(Boolean);
+const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || "").split(",").map(o => o.trim()).filter(Boolean);
 
 const start = async () => {
   await connectDB();
