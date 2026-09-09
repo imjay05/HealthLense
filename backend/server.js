@@ -2,7 +2,7 @@ require("dotenv").config();
 const http = require("http");
 const { Server } = require("socket.io");
 const app = require("./app");
-const connectDB  = require("./config/DB");
+const connectDB = require("./config/DB");
 const { setupSocket } = require("./socket/SocketHandler");
 
 const PORT = process.env.PORT || 5000;
@@ -10,12 +10,10 @@ const PORT = process.env.PORT || 5000;
 const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || "").split(",").map(o => o.trim()).filter(Boolean);
 
 const start = async () => {
-  await connectDB();
-
   const httpServer = http.createServer(app);
   const io = new Server(httpServer, {
     cors: {
-      rigin: (origin, callback) => {
+      origin: (origin, callback) => {          
         if (!origin) return callback(null, true);
         if (ALLOWED_ORIGINS.includes(origin)) return callback(null, true);
         callback(new Error(`CORS blocked: ${origin}`));
@@ -31,9 +29,12 @@ const start = async () => {
     console.log(`
    HealthLense Server running
    ├─ HTTP  → http://localhost:${PORT}
-   ├─ DB    → MongoDB Atlas
+   ├─ DB    → connecting...
     `);
   });
+
+  // Connect to Mongo without letting a failure kill the whole process
+  connectDB();
 };
 
 start().catch(err => {
